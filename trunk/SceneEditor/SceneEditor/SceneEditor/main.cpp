@@ -13,13 +13,13 @@ void setupMaterial(){
 
 		float diff[4] = {1.0,0,0, 0}, spec[4]={1, 1, 1, 0};
 		
-		/*glMaterialfv(GL_FRONT, GL_SPECULAR, spec);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, spec);
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, diff);
 		glMaterialf(GL_FRONT, GL_SHININESS, 125);
 
 		glMaterialfv(GL_BACK, GL_SPECULAR, spec);
 		glMaterialfv(GL_BACK, GL_DIFFUSE, diff);
-		glMaterialf(GL_BACK, GL_SHININESS, 125);*/
+		glMaterialf(GL_BACK, GL_SHININESS, 125);
 		// the shininess factor is a number between 0 and 128, where 0 is the shiniest the object can be
 }
 
