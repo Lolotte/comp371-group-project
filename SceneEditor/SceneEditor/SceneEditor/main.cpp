@@ -10,6 +10,7 @@ int width = WIDTH;
 int height = HEIGHT;
 
 void setupMaterial(){
+
 		float diff[4] = {1.0,0,0, 0}, spec[4]={1, 1, 1, 0};
 		
 		glMaterialfv(GL_FRONT, GL_SPECULAR, spec);
