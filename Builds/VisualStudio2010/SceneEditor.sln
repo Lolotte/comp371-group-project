@@ -1,0 +1,19 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{3D4B668B-45BF-9EA9-245A-CB6C4F6F0600}") = "SceneEditor", "SceneEditor.vcxproj", "{6C22634E-1529-43EE-6223-D5DBFCC17E59}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6C22634E-1529-43EE-6223-D5DBFCC17E59}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6C22634E-1529-43EE-6223-D5DBFCC17E59}.Debug|Win32.Build.0 = Debug|Win32
+		{6C22634E-1529-43EE-6223-D5DBFCC17E59}.Release|Win32.ActiveCfg = Release|Win32
+		{6C22634E-1529-43EE-6223-D5DBFCC17E59}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
