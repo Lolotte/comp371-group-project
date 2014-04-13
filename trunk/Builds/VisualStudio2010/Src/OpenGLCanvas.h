@@ -49,6 +49,9 @@ private:
 	bool _shadowMapping;
 	bool _areaLighting;
 	File _textureFile;
+
+	bool fogToggle;
+	GLfloat fogDensityStart, fogDensityEnd;
 };
 
 
