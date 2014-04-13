@@ -1078,6 +1078,7 @@
     <ClCompile Include="Src\Shapes.cpp" />
     <ClCompile Include="Src\TTrackBall.cpp" />
     <ClCompile Include="Src\TTuple.cpp" />
+    <ClCompile Include="textfile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\MainComponent.h">
@@ -2147,6 +2148,7 @@
     <ClInclude Include="Src\Shapes.h" />
     <ClInclude Include="Src\TTrackBall.h" />
     <ClInclude Include="Src\TTuple.h" />
+    <ClInclude Include="textfile.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\Project\JUCE-3.0.5\JUCE-3.0.5\modules\juce_core\juce_module_info">
