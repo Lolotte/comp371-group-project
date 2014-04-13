@@ -36,7 +36,7 @@ public:
 	inline void setAntiAliasing(bool value);
 	inline void setShadowMapping(bool value);
 	inline void setAreaLighting(bool value);
-
+		
 private:
 	void setupLights();
 

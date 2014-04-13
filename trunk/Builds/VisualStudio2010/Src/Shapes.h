@@ -5,16 +5,17 @@
 
 class ADrawable {
 	// An abstract class for objects that can be drawn.
+
 public:
 	ADrawable();
 	virtual ~ADrawable() {}
 	//virtual void dokey(int key);
 	virtual void move(int x, int y);
-	virtual void rotate(int cx, int cy, int mx, int my);
+	virtual void rotate(int mx, int my);
 	virtual void scale(int y);
 	virtual void draw();
 	virtual void setupMaterials();
-
+	bool selected;		// Selected object receives keystrokes.
 	bool rotating;
 	bool scaling;
 	bool moving;
@@ -22,7 +23,7 @@ protected:
 	TMatrix4x4 view;
 	TTrackBall ball;	// Trackball used to rotate the object
 	char num;			// Object's name.
-	GLfloat x, y, z;	// Object's position.
+	GLfloat x, y, z, w, h;	// Object's position and dimensions.
 };
 
 class Sphere : public ADrawable {

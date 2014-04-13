@@ -6,6 +6,7 @@
 #include "OpenGLCanvas.h"
 #include "textfile.h"
 
+
 OpenGLCanvas::OpenGLCanvas(void)
 	: _isInitialized(false)
 {
@@ -38,6 +39,18 @@ void OpenGLCanvas::initialize()
 // Mouse listener
 void OpenGLCanvas::mouseDrag(const MouseEvent &event)
 {
+	std::vector<ADrawable *>::iterator it;
+	for (it = _primitives.begin(); it != _primitives.end(); ++it)
+	{
+		if ((*it)->selected){
+			if (event.mods.isRightButtonDown())
+				(*it)->move(event.getDistanceFromDragStartX(), event.getDistanceFromDragStartY());
+			if (event.mods.isLeftButtonDown())
+				(*it)->rotate(event.getDistanceFromDragStartX(), event.getDistanceFromDragStartY());
+			if (event.mods.isMiddleButtonDown())
+				(*it)->scale(event.getDistanceFromDragStartY());
+		}
+	}
 }
 
 void OpenGLCanvas::mouseEnter(const MouseEvent &event)
@@ -63,6 +76,25 @@ void OpenGLCanvas::mouseDoubleClick (const MouseEvent &event)
 // key listener
 bool 	OpenGLCanvas::keyPressed (const KeyPress &key, Component *originatingComponent)
 {
+	std::vector<ADrawable *>::iterator it;
+	it = _primitives.begin();
+	if (key.getKeyCode() == 44){
+		(*it)->selected = false;
+		if (it != _primitives.begin())
+			it--;
+		else
+			it = _primitives.end();
+		(*it)->selected = true;
+	}
+	if (key.getKeyCode() == 46){
+		(*it)->selected = false;
+		if (it != _primitives.end())
+			it++;
+		else
+			it = _primitives.begin();
+		(*it)->selected = true;
+	} 
+
 
 	if (key == KeyPress::escapeKey)
 	{
