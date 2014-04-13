@@ -127,10 +127,20 @@ void Tetrahedron::draw() {
 }
 ///////////////////////////////////////////////// class Cube
 
+void Cube::setupMaterials()
+{
+	float diff[4] = {1.0,1.0,0, 1.0}, spec[4]={1, 1, 1, 0};
+
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 125);
+}
+
 void Cube::draw() {
 	glPushMatrix();
 	//glMultMatrixf((float*) ball.getMatrix().getBuffer());
-	glTranslatef(-5, -2, -20);
+	glTranslatef(0, 0, -10);
+	glRotatef(45, 0, 1, 0);
 	glutSolidCube(2);
 	glPopMatrix();
 }

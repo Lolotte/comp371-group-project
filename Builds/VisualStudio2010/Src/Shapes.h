@@ -113,6 +113,8 @@ public:
 	}
 	void draw();
 	int drawCount;
+	virtual void setupMaterials();
+
 private:
 	GLfloat r, g, b;
 

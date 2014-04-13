@@ -25,8 +25,47 @@ OpenGLCanvas::~OpenGLCanvas(void)
 
 void OpenGLCanvas::initialize()
 {
+	addMouseListener(this, true);
+	addKeyListener(this);
 	this->setupLights();
 }
+
+// Mouse listener
+void OpenGLCanvas::mouseDrag(const MouseEvent &event)
+{
+}
+
+void OpenGLCanvas::mouseEnter(const MouseEvent &event)
+{
+}
+
+void OpenGLCanvas::mouseDown(const MouseEvent &event)
+{
+}
+
+void OpenGLCanvas::mouseWheelMove(const MouseEvent &event)
+{
+}
+
+void OpenGLCanvas::mouseExit (const MouseEvent &event)
+{
+}
+
+void OpenGLCanvas::mouseDoubleClick (const MouseEvent &event)
+{
+}
+
+// key listener
+bool 	OpenGLCanvas::keyPressed (const KeyPress &key, Component *originatingComponent)
+{
+	return true;
+}
+
+bool 	OpenGLCanvas::keyStateChanged (bool isKeyDown, Component *originatingComponent)
+{
+	return true;
+}
+
 
 void OpenGLCanvas::setupLights()
 {
@@ -34,7 +73,7 @@ void OpenGLCanvas::setupLights()
 	glPushMatrix();
 	glLoadIdentity();
 
-	GLfloat light_position1[] = { 0, 0, 5, 0 };
+	GLfloat light_position1[] = { -5, 0, 5, 0 };
 	GLfloat light1[] = { 1, 1, 1, 1 };
 	GLfloat light2[] = { 0.5, 0.5, 0.5, 1.0 };
 
@@ -69,7 +108,7 @@ void OpenGLCanvas::renderOpenGL()
 		this->initialize();
 		_isInitialized = true;
 	}
-
+	
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 	glEnable(GL_DEPTH_TEST);
