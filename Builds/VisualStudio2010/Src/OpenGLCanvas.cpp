@@ -1,10 +1,16 @@
 #include <iostream>
 #include <Windows.h>
+#include "glew\include\GL\glew.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include <gl/glut.h>
 #include "OpenGLCanvas.h"
 #include "textfile.h"
+
+
+bool fogToggle = false;     // Fog on/off
+GLfloat fogDensityStart = 10.0f;	// Fog density
+GLfloat fogDensityEnd = 20.0f;
 
 
 OpenGLCanvas::OpenGLCanvas(void)
@@ -29,6 +35,7 @@ void OpenGLCanvas::initialize()
 {
 	addMouseListener(this, true);
 	addKeyListener(this);
+	this->setWantsKeyboardFocus(true);
 	this->setupLights();
 	this->setWantsKeyboardFocus(true);
 	fogToggle = false;			 // Fog on/off
@@ -59,6 +66,7 @@ void OpenGLCanvas::mouseEnter(const MouseEvent &event)
 
 void OpenGLCanvas::mouseDown(const MouseEvent &event)
 {
+	std::cout << "toto" << std::endl;
 }
 
 void OpenGLCanvas::mouseWheelMove(const MouseEvent &event)
@@ -103,10 +111,7 @@ bool 	OpenGLCanvas::keyPressed (const KeyPress &key, Component *originatingCompo
 
 	if (key.getKeyCode() == 70)
 	{
-		if (fogToggle)
-			fogToggle = false;
-		else if (!fogToggle)
-			fogToggle = true;
+		fogToggle = !fogToggle;
 	}
 	if (key.getKeyCode() == 43)
 	{
