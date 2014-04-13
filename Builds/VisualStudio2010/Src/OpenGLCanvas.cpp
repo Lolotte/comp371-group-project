@@ -7,7 +7,8 @@
 #include "textfile.h"
 
 bool fogToggle = false;     // Fog on/off
-GLfloat fogDensity = 0.1f;	// Fog density
+GLfloat fogDensityStart = 10.0f;	// Fog density
+GLfloat fogDensityEnd = 20.0f;
 
 
 OpenGLCanvas::OpenGLCanvas(void)
@@ -79,11 +80,13 @@ bool 	OpenGLCanvas::keyPressed (const KeyPress &key, Component *originatingCompo
 	}
 	if (key.getKeyCode() == 43)
 	{
-		fogDensity += 0.01f;
+		fogDensityStart += 0.1f;
+		fogDensityEnd += 0.1f;
 	}
 	if (key.getKeyCode() == 45)
 	{
-		fogDensity -= 0.01f;
+		fogDensityStart -= 0.1f;
+		fogDensityEnd -= 0.1f;	
 	}
 
 
@@ -132,23 +135,18 @@ void OpenGLCanvas::setupLights()
 
 void OpenGLCanvas::fog()
 {
-	// Fog variables
+	GLfloat fogColor[4]= {0.5f, 0.5f, 0.5f, 1.0f};      // Fog Color
+	GLfloat fogDensity = 0.1f;
 
-GLuint filter;                      // Which Filter To Use
-GLuint fogMode[]= { GL_EXP, GL_EXP2, GL_LINEAR };   // Storage For Three Types Of Fog
-GLuint fogfilter= 0;                    // Which Fog To Use
-GLfloat fogColor[4]= {0.5f, 0.5f, 0.5f, 1.0f};      // Fog Color
-//GLfloat fogDensity = 0.1f;
-
-	glClearColor(0.5f,0.5f,0.5f,1.0f);          // We'll Clear To The Color Of The Fog ( Modified )
-
-		glFogi(GL_FOG_MODE, fogMode[fogfilter]);        // Fog Mode
-		glFogfv(GL_FOG_COLOR, fogColor);            // Set Fog Color
-		glFogf(GL_FOG_DENSITY, fogDensity);              // How Dense Will The Fog Be
-		glHint(GL_FOG_HINT, GL_DONT_CARE);          // Fog Hint Value
-		glFogf(GL_FOG_START, 1.0f);             // Fog Start Depth
-		glFogf(GL_FOG_END, 10.0f);               // Fog End Depth
-		glEnable(GL_FOG);                   // Enables GL_FOG
+	glClearColor(fogColor[0], fogColor[1], fogColor[2], fogColor[3]); 
+		
+	glFogi(GL_FOG_MODE, GL_LINEAR);				// Fog Mode
+	glFogfv(GL_FOG_COLOR, fogColor);        // Fog Color
+	//glFogf(GL_FOG_DENSITY, fogDensity);     // How Dense Will The Fog Be (not needed for GL_LINEAR)
+	glHint(GL_FOG_HINT, GL_NICEST);         // Fog Hint Value
+	glFogf(GL_FOG_START, fogDensityStart);  // Fog Start Depth
+	glFogf(GL_FOG_END, fogDensityEnd);     // Fog End Depth
+	glEnable(GL_FOG);						// Enables GL_FOG
 }
 
 
