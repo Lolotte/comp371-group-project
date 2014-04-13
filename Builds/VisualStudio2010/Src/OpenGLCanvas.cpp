@@ -6,11 +6,6 @@
 #include "OpenGLCanvas.h"
 #include "textfile.h"
 
-bool fogToggle = false;     // Fog on/off
-GLfloat fogDensityStart = 10.0f;	// Fog density
-GLfloat fogDensityEnd = 20.0f;
-
-
 OpenGLCanvas::OpenGLCanvas(void)
 	: _isInitialized(false)
 {
@@ -35,6 +30,9 @@ void OpenGLCanvas::initialize()
 	addKeyListener(this);
 	this->setupLights();
 	this->setWantsKeyboardFocus(true);
+	fogToggle = false;			 // Fog on/off
+	fogDensityStart = 10.0f;	// Fog density startpoint
+	fogDensityEnd = 20.0f;		// Fog density endpoint
 }
 
 // Mouse listener
