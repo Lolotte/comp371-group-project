@@ -4,6 +4,11 @@
 #include <gl/GLU.h>
 #include <gl/glut.h>
 #include "OpenGLCanvas.h"
+#include "textfile.h"
+
+bool fogToggle = false;     // Fog on/off
+GLfloat fogDensity = 0.1f;	// Fog density
+
 
 OpenGLCanvas::OpenGLCanvas(void)
 	: _isInitialized(false)
@@ -28,6 +33,7 @@ void OpenGLCanvas::initialize()
 	addMouseListener(this, true);
 	addKeyListener(this);
 	this->setupLights();
+	this->setWantsKeyboardFocus(true);
 }
 
 // Mouse listener
@@ -58,11 +64,35 @@ void OpenGLCanvas::mouseDoubleClick (const MouseEvent &event)
 // key listener
 bool 	OpenGLCanvas::keyPressed (const KeyPress &key, Component *originatingComponent)
 {
+
+	if (key == KeyPress::escapeKey)
+	{
+			exit(0);
+	}
+
+	if (key.getKeyCode() == 70)
+	{
+		if (fogToggle)
+			fogToggle = false;
+		else if (!fogToggle)
+			fogToggle = true;
+	}
+	if (key.getKeyCode() == 43)
+	{
+		fogDensity += 0.01f;
+	}
+	if (key.getKeyCode() == 45)
+	{
+		fogDensity -= 0.01f;
+	}
+
+
 	return true;
 }
 
 bool 	OpenGLCanvas::keyStateChanged (bool isKeyDown, Component *originatingComponent)
 {
+
 	return true;
 }
 
@@ -100,6 +130,28 @@ void OpenGLCanvas::setupLights()
 	glPopMatrix();
 }
 
+void OpenGLCanvas::fog()
+{
+	// Fog variables
+
+GLuint filter;                      // Which Filter To Use
+GLuint fogMode[]= { GL_EXP, GL_EXP2, GL_LINEAR };   // Storage For Three Types Of Fog
+GLuint fogfilter= 0;                    // Which Fog To Use
+GLfloat fogColor[4]= {0.5f, 0.5f, 0.5f, 1.0f};      // Fog Color
+//GLfloat fogDensity = 0.1f;
+
+	glClearColor(0.5f,0.5f,0.5f,1.0f);          // We'll Clear To The Color Of The Fog ( Modified )
+
+		glFogi(GL_FOG_MODE, fogMode[fogfilter]);        // Fog Mode
+		glFogfv(GL_FOG_COLOR, fogColor);            // Set Fog Color
+		glFogf(GL_FOG_DENSITY, fogDensity);              // How Dense Will The Fog Be
+		glHint(GL_FOG_HINT, GL_DONT_CARE);          // Fog Hint Value
+		glFogf(GL_FOG_START, 1.0f);             // Fog Start Depth
+		glFogf(GL_FOG_END, 10.0f);               // Fog End Depth
+		glEnable(GL_FOG);                   // Enables GL_FOG
+}
+
+
 void OpenGLCanvas::renderOpenGL()
 {
 
@@ -108,8 +160,17 @@ void OpenGLCanvas::renderOpenGL()
 		this->initialize();
 		_isInitialized = true;
 	}
-	
-	glClearColor(0, 0, 0, 0);
+
+	if (fogToggle)
+	{
+		fog();
+	}
+	else if (!fogToggle)
+	{
+		glClearColor(0, 0, 0, 0);
+		glDisable(GL_FOG);
+	}
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 	glEnable(GL_DEPTH_TEST);
 

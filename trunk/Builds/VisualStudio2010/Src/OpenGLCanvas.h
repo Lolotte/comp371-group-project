@@ -1,6 +1,8 @@
 #pragma once
 #include "JuceHeader.h"
 #include "Shapes.h"
+#include "textfile.h"
+
 #include <vector>
 
 class OpenGLCanvas : public Component, public OpenGLRenderer, public MouseListener, public KeyListener
@@ -14,6 +16,7 @@ public:
 	virtual void renderOpenGL();
 	virtual void newOpenGLContextCreated ();
 	virtual void openGLContextClosing ();
+	virtual void fog();
 
 	// Mouse listener
 	virtual void mouseDrag(const MouseEvent &event);
@@ -55,4 +58,5 @@ void	OpenGLCanvas::setBumpMapping(bool value) {_bumpMapping = value;}
 void	OpenGLCanvas::setAntiAliasing(bool value) {_antiAliasing = value;}
 void	OpenGLCanvas::setShadowMapping(bool value) {_shadowMapping = value;}
 void	OpenGLCanvas::setAreaLighting(bool value) {_areaLighting = value;}
+
 
