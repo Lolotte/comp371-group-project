@@ -3,7 +3,7 @@
 #include "Shapes.h"
 #include <vector>
 
-class OpenGLCanvas : public Component, public OpenGLRenderer
+class OpenGLCanvas : public Component, public OpenGLRenderer, public MouseListener, public KeyListener
 {
 public:
 	OpenGLCanvas(void);
@@ -14,7 +14,19 @@ public:
 	virtual void renderOpenGL();
 	virtual void newOpenGLContextCreated ();
 	virtual void openGLContextClosing ();
-	
+
+	// Mouse listener
+	virtual void mouseDrag(const MouseEvent &event);
+	virtual void mouseEnter(const MouseEvent &event);
+	virtual void mouseDown(const MouseEvent &event);
+	virtual void mouseWheelMove(const MouseEvent &event);
+	virtual void mouseExit (const MouseEvent &event);
+	virtual void mouseDoubleClick (const MouseEvent &event);
+
+	// key listener
+	virtual bool 	keyPressed (const KeyPress &key, Component *originatingComponent);
+	virtual bool 	keyStateChanged (bool isKeyDown, Component *originatingComponent);
+
 	inline void setTextureMapping(bool value);
 	inline void setTextureMapping(bool value, File file);
 	inline void setBumpMapping(bool value);
