@@ -20,7 +20,7 @@ public:
 					GLdouble pixdy, GLdouble eyedx, GLdouble eyedy, 
 					GLdouble focus);
 
-	static const int MAX_ITERATIONS;
+	static int MAX_ITERATIONS;
 	static const double PI_;
 };
 

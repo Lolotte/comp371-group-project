@@ -3,7 +3,7 @@
 #include <cmath>
 
 const double Jittering::PI_ = 3.14159265358979323846;
-const int Jittering::MAX_ITERATIONS = 10;
+int Jittering::MAX_ITERATIONS = 10;
 
 Jittering::Jittering(void)
 {
