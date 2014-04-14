@@ -972,6 +972,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_gui_extra\juce_gui_extra.cpp" />
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_opengl\juce_opengl.cpp" />
     <ClCompile Include="Jittering.cpp" />
+    <ClCompile Include="ShadersManager.cpp" />
     <ClCompile Include="Src\GUI.cpp" />
     <ClCompile Include="Src\OpenGLCanvas.cpp" />
     <ClCompile Include="Src\PrimitiveCreator.cpp" />
@@ -1336,6 +1337,7 @@
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="Jittering.h" />
+    <ClInclude Include="ShadersManager.h" />
     <ClInclude Include="Src\DataStructures.hpp" />
     <ClInclude Include="Src\GUI.h" />
     <ClInclude Include="Src\OpenGLCanvas.h" />

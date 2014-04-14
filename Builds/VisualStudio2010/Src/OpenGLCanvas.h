@@ -2,6 +2,7 @@
 #include "JuceHeader.h"
 #include "Shapes.h"
 #include "textfile.h"
+#include "ShadersManager.h"
 
 #include <vector>
 
@@ -51,6 +52,7 @@ private:
 	bool _shadowMapping;
 	bool _areaLighting;
 	File _textureFile;
+	ShadersManager *_shadersManager;
 
 	bool fogToggle;
 	GLfloat fogDensityStart, fogDensityEnd;

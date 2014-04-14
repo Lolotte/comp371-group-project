@@ -1080,6 +1080,7 @@
     <ClCompile Include="Src\TTuple.cpp" />
     <ClCompile Include="textfile.cpp" />
     <ClCompile Include="Jittering.cpp" />
+    <ClCompile Include="ShadersManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\MainComponent.h">
@@ -2151,6 +2152,7 @@
     <ClInclude Include="Src\TTuple.h" />
     <ClInclude Include="textfile.h" />
     <ClInclude Include="Jittering.h" />
+    <ClInclude Include="ShadersManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\Project\JUCE-3.0.5\JUCE-3.0.5\modules\juce_core\juce_module_info">
