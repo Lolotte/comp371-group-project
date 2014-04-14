@@ -39,6 +39,8 @@ public:
 		
 private:
 	void setupLights();
+	void applyAntiAliasing();
+	void drawPrimitives();
 
 	bool _isInitialized;
 	OpenGLContext _contextOpenGL;

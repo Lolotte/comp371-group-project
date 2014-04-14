@@ -17,6 +17,21 @@ public:
 };
 
 template<typename T>
+class Vector2
+{
+public:
+	Vector2() : x(0), y(0) {}
+
+	Vector2(T x1, T y1)
+		: x(x1), y(y1)
+	{
+	}
+
+	T x;
+	T y;
+};
+
+template<typename T>
 class Rect
 {
 public:
