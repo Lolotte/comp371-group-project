@@ -26,7 +26,12 @@ ADrawable::ADrawable() {
 		selected = false;
 	glMultMatrixf((float*) view.getBuffer());
 	shapeCounter++;
+	_diffuseColor = _diffuseColor.fromFloatRGBA(0.3, 0.3, 0.3, 1.0);
+	_specularColor = _specularColor.fromFloatRGBA(1.0, 1.0, 1.0, 0.0);
+	_shininess = 125;
 }
+
+void ADrawable::setShininess(double shininess) {_shininess = shininess;}
 
 void ADrawable::draw()
 {
@@ -34,11 +39,32 @@ void ADrawable::draw()
 
 void ADrawable::setupMaterials()
 {
-	float diff[4] = {1.0,1.0,1.0, 1.0}, spec[4]={1, 1, 1, 0};
+	float spec[4]={_specularColor.getFloatRed(),_specularColor.getFloatGreen(),
+				_specularColor.getFloatBlue(), _specularColor.getFloatAlpha()};
+	float diff[4] = {_diffuseColor.getFloatRed(),_diffuseColor.getFloatGreen(),
+				_diffuseColor.getFloatBlue(), _diffuseColor.getFloatAlpha()};
 
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 125);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, _shininess);
+}
+
+void ADrawable::setupMaterials(MaterialType type, Colour color)
+{
+	if (type == MaterialType::DIFFUSE)
+		_diffuseColor = color;
+	else if (type == MaterialType::SPECULAR)
+		_specularColor = color;
+}
+
+
+void ADrawable::resetMaterials()
+{
+	float diff[4] = {0.3,0.3,0.3, 1.0}, spec[4]={1, 1, 1, 0};
+
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, _shininess);
 }
 
 void ADrawable::move(int x, int y) {
@@ -82,16 +108,6 @@ void Sphere::draw() {
 	glPopMatrix();
 }
 
-void Sphere::setupMaterials()
-{
-	float diff[4] = {0,1,0, 1.0}, spec[4]={1, 1, 1, 0};
-	//float ambient[4] = {0.5, 0.5, 0.5, 0.5};
-
-//glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 125);
-}
 
 ///////////////////////////////////////////////// class Cone
 
@@ -105,14 +121,6 @@ void Cone::draw() {
 }
 ///////////////////////////////////////////////// class Teapot
 
-void Teapot::setupMaterials()
-{
-	float diff[4] = {1.0,0,0, 1.0}, spec[4]={1, 1, 1, 0};
-
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 125);
-}
 
 void Teapot::draw() {
 	glPushMatrix();
@@ -146,15 +154,6 @@ void Tetrahedron::draw() {
 	glPopMatrix();
 }
 ///////////////////////////////////////////////// class Cube
-
-void Cube::setupMaterials()
-{
-	float diff[4] = {1.0,1.0,0, 1.0}, spec[4]={1, 1, 1, 0};
-
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 125);
-}
 
 void Cube::draw() {
 	glPushMatrix();

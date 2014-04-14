@@ -4,7 +4,8 @@
 #include "OpenGLCanvas.h"
 #include <map>
 
-class RenderSettings : public Component, public ButtonListener, public SliderListener
+class RenderSettings : public Component, public ButtonListener,
+						public SliderListener, public ChangeListener
 {
 public:
 	RenderSettings(Rect<int> const& bounds, OpenGLCanvas *openGLCanvas);
@@ -14,6 +15,7 @@ public:
 	void update();
 	void buttonClicked (Button* button);
 	virtual void 	sliderValueChanged (Slider *slider);
+	virtual void changeListenerCallback(ChangeBroadcaster*);
 
 private:
 	void initializeListeners();
@@ -22,6 +24,7 @@ private:
 	void setBumpMapping();
 	void setAntiAliasing();
 	void setAreaLighting();
+	void enableMaterials();
 
 	typedef void (RenderSettings::*listener)(void);
 
@@ -35,6 +38,10 @@ private:
 	ToggleButton *_areaLighting;
 	ToggleButton *_textureMapping;
 	TextButton	*_browseButton;
+	ToggleButton *_materialsOn;
+	ColourSelector *_materialColorSelector;
+	ColourSelector *_specularColorSelector;
+	Slider		*_shininess;
 	Label *_textureName;
 	File _textureFile;
 	std::map<Button *, listener> _buttonListeners;

@@ -2,6 +2,7 @@
 
 
 ShadersManager::ShadersManager(OpenGLContext & contextOpenGL)
+	: _isActive(false)
 {
 	_shaderProgram = new OpenGLShaderProgram(contextOpenGL);
 }
@@ -24,12 +25,18 @@ void ShadersManager::addShader(String const& fragShaderName, String const& vertS
 	_shaderProgram->link();
 }
 
+GLuint ShadersManager::getProgramID() const {return _shaderProgram->getProgramID();}
+
 void ShadersManager::use()
 {
+	_isActive = true;
 	_shaderProgram->use();
 }
 
 void ShadersManager::release()
 {
+	_isActive = false;
 	_shaderProgram->release();
 }
+
+bool ShadersManager::isActive() const {return _isActive;}

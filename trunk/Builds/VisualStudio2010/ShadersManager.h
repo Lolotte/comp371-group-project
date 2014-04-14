@@ -10,8 +10,11 @@ public:
 	void addShader(String const& fragShaderName, String const& vertShaderName);
 	void use();
 	void release();
+	GLuint	getProgramID() const;
+	bool isActive() const;
 
 private:
+	bool _isActive;
 	OpenGLShaderProgram *_shaderProgram;
 };
 

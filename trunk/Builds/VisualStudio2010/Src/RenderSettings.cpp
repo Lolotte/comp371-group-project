@@ -37,7 +37,8 @@ void	RenderSettings::initialize()
 	addAndMakeVisible(_antiAliasing);
 
 	_intensityAA = new Slider;
-	_intensityAA->setValue(Jittering::MAX_ITERATIONS);
+	_intensityAA->setRange(1, Jittering::MAX_ITERATIONS);
+	_intensityAA->setValue(8);
 	_intensityAA->addListener(this);
 	_intensityAA->setBounds(0, _antiAliasing->getY() + _antiAliasing->getHeight(), _bounds.width, 30);
 	addAndMakeVisible(_intensityAA);
@@ -63,6 +64,30 @@ void	RenderSettings::initialize()
 	_textureName->setBounds(0, _browseButton->getY() + _browseButton->getHeight(), _bounds.width, 30);
 	addAndMakeVisible(_textureName);
 
+	_materialsOn = new ToggleButton("Materials");
+	_materialsOn->setToggleState(true, NotificationType::dontSendNotification);
+	_materialsOn->addListener(this);
+	_materialsOn->setBounds(0, _textureName->getY() + _textureName->getHeight(), _bounds.width, 30);
+	addAndMakeVisible(_materialsOn);
+
+	_materialColorSelector = new ColourSelector;
+	_materialColorSelector->addChangeListener(this);
+	_materialColorSelector->setBounds(0, _materialsOn->getY() + _materialsOn->getHeight(), _bounds.width, 120);
+	addAndMakeVisible(_materialColorSelector);
+
+	_specularColorSelector = new ColourSelector;
+	_specularColorSelector->addChangeListener(this);
+	_specularColorSelector->setBounds(0, _materialColorSelector->getY() + _materialColorSelector->getHeight(), _bounds.width, 120);
+	addAndMakeVisible(_specularColorSelector);
+
+	_shininess = new Slider;
+	_shininess->setRange(0, 128);
+	_shininess->setValue(125);
+	_shininess->addListener(this);
+	_shininess->setBounds(0, _specularColorSelector->getY() + _specularColorSelector->getHeight(), _bounds.width, 30);
+	addAndMakeVisible(_shininess);
+
+
 	this->initializeListeners();
 }
 
@@ -73,6 +98,14 @@ void RenderSettings::initializeListeners()
 	_buttonListeners[_antiAliasing] = &RenderSettings::setAntiAliasing;
 	_buttonListeners[_bumpMapping] = &RenderSettings::setBumpMapping;
 	_buttonListeners[_areaLighting] = &RenderSettings::setAreaLighting;
+	_buttonListeners[_browseButton] = &RenderSettings::getTextureFile;
+	_buttonListeners[_materialsOn] = &RenderSettings::enableMaterials;
+}
+
+void RenderSettings::changeListenerCallback(ChangeBroadcaster* broadcaster)
+{
+	if (broadcaster == _materialColorSelector)
+		_openGLCanvas->setDiffuseMaterial(_materialColorSelector->getCurrentColour());
 }
 
 void RenderSettings::update()
@@ -89,9 +122,14 @@ void RenderSettings::update()
 
 void 	RenderSettings::sliderValueChanged (Slider *slider)
 {
-	Jittering::MAX_ITERATIONS = static_cast<int>(slider->getValue());
-	if (Jittering::MAX_ITERATIONS == 0)
-		Jittering::MAX_ITERATIONS = 1;
+	if (slider == _intensityAA)
+	{
+		Jittering::MAX_ITERATIONS = static_cast<int>(slider->getValue());
+		if (Jittering::MAX_ITERATIONS == 0)
+			Jittering::MAX_ITERATIONS = 1;
+	}
+	else if (slider == _shininess)
+		_openGLCanvas->setShininess(slider->getValue());
 }
 
 void  RenderSettings::buttonClicked (Button* button)
@@ -101,11 +139,16 @@ void  RenderSettings::buttonClicked (Button* button)
 
 void	RenderSettings::getTextureFile()
 {
-	FileChooser fileChooser("Texture file browser");
-	fileChooser.browseForFileToOpen();
-	_textureFile = fileChooser.getResult();
-	_textureName->setText(_textureFile.getFileName(), NotificationType::dontSendNotification);
-	_openGLCanvas->setTextureMapping(true, _textureFile);
+	if (_textureMapping->getToggleState())
+	{
+		FileChooser fileChooser("Texture file browser");
+		fileChooser.browseForFileToOpen();
+		_textureFile = fileChooser.getResult();
+		_textureName->setText(_textureFile.getFileName(), NotificationType::dontSendNotification);
+		_openGLCanvas->setTextureMapping(true, _textureFile);
+	}
+	else
+		_openGLCanvas->setTextureMapping(false, _textureFile);
 }
 
 void	RenderSettings::setShadowMapping()
@@ -126,4 +169,9 @@ void	RenderSettings::setAntiAliasing()
 void	RenderSettings::setAreaLighting()
 {
 	_openGLCanvas->setAreaLighting(_areaLighting->getToggleState());
+}
+
+void	RenderSettings::enableMaterials()
+{
+	_openGLCanvas->enableMaterials(_materialsOn->getToggleState());
 }
