@@ -15,11 +15,11 @@ GUI::~GUI(void)
 
 void GUI::initialize()
 {
-	_primCreator = new PrimitiveCreator(Rect<int>(0, 0, _bounds.width, _bounds.height / 2), _openGLCanvas);
+	_primCreator = new PrimitiveCreator(Rect<int>(0, 0, _bounds.width, _bounds.height / 4), _openGLCanvas);
 	_primCreator->initialize();
 	addAndMakeVisible(_primCreator);
 
-	_renderSettings = new RenderSettings(Rect<int>(0, _bounds.height / 2, _bounds.width, _bounds.height / 2), _openGLCanvas);
+	_renderSettings = new RenderSettings(Rect<int>(0, _bounds.height / 4, _bounds.width, (int)(_bounds.height * 0.75f)), _openGLCanvas);
 	_renderSettings->initialize();
 	addAndMakeVisible(_renderSettings);
 }

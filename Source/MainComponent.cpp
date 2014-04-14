@@ -17,7 +17,7 @@ MainContentComponent::MainContentComponent()
     setSize (1024, 768);
 	_canvasOpenGL = new OpenGLCanvas;
 	addAndMakeVisible(_canvasOpenGL);
-	_gui = new GUI(Rect<int>(900, 0, 124, 768), _canvasOpenGL);
+	_gui = new GUI(Rect<int>(850, 0, 174, 768), _canvasOpenGL);
 	_gui->initialize();
 	addAndMakeVisible(_gui);
 }

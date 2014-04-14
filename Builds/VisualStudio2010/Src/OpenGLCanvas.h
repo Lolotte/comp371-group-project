@@ -3,6 +3,8 @@
 #include "Shapes.h"
 #include "textfile.h"
 #include "ShadersManager.h"
+//#include "SOIL.h"
+#include "TextureMapping.h"
 
 #include <vector>
 
@@ -31,8 +33,12 @@ public:
 	virtual bool 	keyPressed (const KeyPress &key, Component *originatingComponent);
 	virtual bool 	keyStateChanged (bool isKeyDown, Component *originatingComponent);
 
+	void setShininess(double value);
+	void setDiffuseMaterial(Colour diffuseColor);
+	void setSpecularMaterial(Colour specularColor);
+	void enableMaterials(bool value);
+	void setTextureMapping(bool value, File file);
 	inline void setTextureMapping(bool value);
-	inline void setTextureMapping(bool value, File file);
 	inline void setBumpMapping(bool value);
 	inline void setAntiAliasing(bool value);
 	inline void setShadowMapping(bool value);
@@ -51,8 +57,10 @@ private:
 	bool _antiAliasing;
 	bool _shadowMapping;
 	bool _areaLighting;
+	bool _materialsOn;
 	File _textureFile;
 	ShadersManager *_shadersManager;
+	TextureMapping *_textureMappingManager;
 
 	bool fogToggle;
 	GLfloat fogDensityStart, fogDensityEnd;
@@ -60,7 +68,6 @@ private:
 
 
 void	OpenGLCanvas::setTextureMapping(bool value) {_textureMapping = value;}
-void	OpenGLCanvas::setTextureMapping(bool value, File file) {_textureMapping = value; _textureFile = file;}
 void	OpenGLCanvas::setBumpMapping(bool value) {_bumpMapping = value;}
 void	OpenGLCanvas::setAntiAliasing(bool value) {_antiAliasing = value;}
 void	OpenGLCanvas::setShadowMapping(bool value) {_shadowMapping = value;}

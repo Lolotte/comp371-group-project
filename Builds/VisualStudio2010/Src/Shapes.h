@@ -2,11 +2,14 @@
 #define Shapes_h
 #include "TTrackBall.h"
 #include "TTuple.h"
+#include "..\..\JuceLibraryCode\JuceHeader.h"
 
 class ADrawable {
 	// An abstract class for objects that can be drawn.
 
 public:
+	enum MaterialType {SPECULAR, DIFFUSE};
+
 	ADrawable();
 	virtual ~ADrawable() {}
 	//virtual void dokey(int key);
@@ -14,12 +17,21 @@ public:
 	virtual void rotate(int mx, int my);
 	virtual void scale(int y);
 	virtual void draw();
+	void setShininess(double);
 	virtual void setupMaterials();
+	virtual void setupMaterials(MaterialType type, Colour diffuseColor);
+	void resetMaterials();
+
 	bool selected;		// Selected object receives keystrokes.
 	bool rotating;
 	bool scaling;
 	bool moving;
+
+
 protected:
+	Colour _diffuseColor;
+	Colour _specularColor;
+	double _shininess;
 	TMatrix4x4 view;
 	TTrackBall ball;	// Trackball used to rotate the object
 	char num;			// Object's name.
@@ -36,7 +48,6 @@ public:
 	}
 	void draw();
 	int drawCount; 
-	virtual void setupMaterials();
 
 private:
 	GLfloat r, g, b;	// Colour components for sphere.
@@ -68,7 +79,7 @@ public:
 	}
 	void draw();
 	int drawCount;
-	virtual void setupMaterials();
+
 private:
 	GLfloat r, g, b;
 
@@ -114,7 +125,6 @@ public:
 	}
 	void draw();
 	int drawCount;
-	virtual void setupMaterials();
 
 private:
 	GLfloat r, g, b;

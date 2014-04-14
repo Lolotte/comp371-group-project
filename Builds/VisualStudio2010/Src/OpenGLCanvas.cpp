@@ -1,5 +1,5 @@
 #include <iostream>
-#include <Windows.h>
+//#include <Windows.h>
 #include "glew\include\GL\glew.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
@@ -20,14 +20,18 @@ OpenGLCanvas::OpenGLCanvas(void)
 	_contextOpenGL.setRenderer (this);
     _contextOpenGL.attachTo (*this);
     _contextOpenGL.setContinuousRepainting (true);
-	setBounds(0, 0, 900, 768);
+	setBounds(0, 0, 850, 768);
 	_shadersManager = new ShadersManager(_contextOpenGL);
+	_textureMappingManager = new TextureMapping;
 }
 
 
 OpenGLCanvas::~OpenGLCanvas(void)
 {
+	_shadersManager->release();
 	delete _shadersManager;
+
+	delete _textureMappingManager;
 
 	std::vector<ADrawable *>::iterator it;
 	for (it = _primitives.begin(); it != _primitives.end(); ++it)
@@ -37,6 +41,7 @@ OpenGLCanvas::~OpenGLCanvas(void)
 
 void OpenGLCanvas::initialize()
 {
+	glewInit();
 	addMouseListener(this, true);
 	addKeyListener(this);
 	this->setWantsKeyboardFocus(true);
@@ -46,6 +51,7 @@ void OpenGLCanvas::initialize()
 	fogDensityStart = 10.0f;	// Fog density startpoint
 	fogDensityEnd = 20.0f;		// Fog density endpoint
 
+	_shadersManager->addShader("textureMapping.frag", "textureMapping.vert");
 	//_shadersManager->addShader("myShader.frag", "myShader.vert");
 	//_shadersManager->addShader("phong.frag", "phong.vert");
 }
@@ -195,7 +201,10 @@ void OpenGLCanvas::fog()
 
 void OpenGLCanvas::renderOpenGL()
 {
-	_shadersManager->use();
+	if (_textureMapping)
+		_textureMappingManager->loadTexture(_textureFile.getFullPathName());
+	if (_shadersManager->isActive())
+		_shadersManager->use();
 
 	if (!_isInitialized)
 	{
@@ -228,14 +237,61 @@ void OpenGLCanvas::renderOpenGL()
 
 		// Matrix setup
 		glMatrixMode(GL_MODELVIEW);
+	
+		if (_textureMapping)
+			_textureMappingManager->apply(_shadersManager->getProgramID());
 
 		std::vector<ADrawable *>::iterator it;
 		for (it = _primitives.begin(); it != _primitives.end(); ++it)
 		{
-			(*it)->setupMaterials();
+			if (_materialsOn)
+				(*it)->setupMaterials();
+			else 
+				(*it)->resetMaterials();
 			(*it)->draw();
 		}
 	}
+}
+
+void	OpenGLCanvas::setDiffuseMaterial(Colour diffuseColour)
+{
+	std::vector<ADrawable *>::iterator it;
+	for (it = _primitives.begin(); it != _primitives.end(); ++it)
+	{
+		if (_materialsOn)
+			(*it)->setupMaterials(ADrawable::MaterialType::DIFFUSE, diffuseColour);
+	}
+}
+
+void	OpenGLCanvas::setShininess(double value)
+{
+	std::vector<ADrawable *>::iterator it;
+	for (it = _primitives.begin(); it != _primitives.end(); ++it)
+	{
+		if (_materialsOn)
+			(*it)->setShininess(value);
+	}
+}
+
+void	OpenGLCanvas::setSpecularMaterial(Colour specularColour)
+{
+	std::vector<ADrawable *>::iterator it;
+	for (it = _primitives.begin(); it != _primitives.end(); ++it)
+	{
+		if (_materialsOn)
+			(*it)->setupMaterials(ADrawable::MaterialType::SPECULAR, specularColour);
+	}
+}
+
+void	OpenGLCanvas::enableMaterials(bool value)
+{
+	_materialsOn = value;
+}
+
+void	OpenGLCanvas::setTextureMapping(bool value, File file)
+{
+	_textureMapping = value;
+	_textureFile = file;
 }
 
 void OpenGLCanvas::drawPrimitives()
