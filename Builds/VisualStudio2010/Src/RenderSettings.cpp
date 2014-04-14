@@ -1,4 +1,5 @@
 #include "RenderSettings.h"
+#include "Jittering.h"
 
 RenderSettings::RenderSettings(Rect<int> const& bounds, OpenGLCanvas *openGLCanvas)
 	: _bounds(bounds), _openGLCanvas(openGLCanvas)
@@ -35,9 +36,15 @@ void	RenderSettings::initialize()
 	_antiAliasing->setBounds(0, _bumpMapping->getY() + _bumpMapping->getHeight(), _bounds.width, 30);
 	addAndMakeVisible(_antiAliasing);
 
+	_intensityAA = new Slider;
+	_intensityAA->setValue(Jittering::MAX_ITERATIONS);
+	_intensityAA->addListener(this);
+	_intensityAA->setBounds(0, _antiAliasing->getY() + _antiAliasing->getHeight(), _bounds.width, 30);
+	addAndMakeVisible(_intensityAA);
+
 	_areaLighting = new ToggleButton("Area lighting");
 	_areaLighting->addListener(this);
-	_areaLighting->setBounds(0, _antiAliasing->getY() + _antiAliasing->getHeight(), _bounds.width, 30);
+	_areaLighting->setBounds(0, _intensityAA->getY() + _intensityAA->getHeight(), _bounds.width, 30);
 	addAndMakeVisible(_areaLighting);
 
 	_textureMapping = new ToggleButton("Texture mapping");
@@ -78,6 +85,13 @@ void RenderSettings::update()
 		_browseButton->setEnabled(false);
 		_textureName->setText("N/A", NotificationType::dontSendNotification);
 	}
+}
+
+void 	RenderSettings::sliderValueChanged (Slider *slider)
+{
+	Jittering::MAX_ITERATIONS = static_cast<int>(slider->getValue());
+	if (Jittering::MAX_ITERATIONS == 0)
+		Jittering::MAX_ITERATIONS = 1;
 }
 
 void  RenderSettings::buttonClicked (Button* button)
