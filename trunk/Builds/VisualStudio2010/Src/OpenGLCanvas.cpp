@@ -21,11 +21,14 @@ OpenGLCanvas::OpenGLCanvas(void)
     _contextOpenGL.attachTo (*this);
     _contextOpenGL.setContinuousRepainting (true);
 	setBounds(0, 0, 900, 768);
+	_shadersManager = new ShadersManager(_contextOpenGL);
 }
 
 
 OpenGLCanvas::~OpenGLCanvas(void)
 {
+	delete _shadersManager;
+
 	std::vector<ADrawable *>::iterator it;
 	for (it = _primitives.begin(); it != _primitives.end(); ++it)
 		delete *it;
@@ -42,6 +45,9 @@ void OpenGLCanvas::initialize()
 	fogToggle = false;			 // Fog on/off
 	fogDensityStart = 10.0f;	// Fog density startpoint
 	fogDensityEnd = 20.0f;		// Fog density endpoint
+
+	//_shadersManager->addShader("myShader.frag", "myShader.vert");
+	//_shadersManager->addShader("phong.frag", "phong.vert");
 }
 
 // Mouse listener
@@ -189,6 +195,7 @@ void OpenGLCanvas::fog()
 
 void OpenGLCanvas::renderOpenGL()
 {
+	_shadersManager->use();
 
 	if (!_isInitialized)
 	{
