@@ -21,22 +21,27 @@ void	RenderSettings::initialize()
 	addAndMakeVisible(_settingsLabel);
 
 	_shadowMapping = new ToggleButton("Shadow mapping");
+	_shadowMapping->addListener(this);
 	_shadowMapping->setBounds(0, _settingsLabel->getY() + _settingsLabel->getHeight(), _bounds.width, 30);
 	addAndMakeVisible(_shadowMapping);
 
 	_bumpMapping = new ToggleButton("Bump mapping");
+	_bumpMapping->addListener(this);
 	_bumpMapping->setBounds(0, _shadowMapping->getY() + _shadowMapping->getHeight(), _bounds.width, 30);
 	addAndMakeVisible(_bumpMapping);
 	
 	_antiAliasing = new ToggleButton("Anti-aliasing");
+	_antiAliasing->addListener(this);
 	_antiAliasing->setBounds(0, _bumpMapping->getY() + _bumpMapping->getHeight(), _bounds.width, 30);
 	addAndMakeVisible(_antiAliasing);
 
 	_areaLighting = new ToggleButton("Area lighting");
+	_areaLighting->addListener(this);
 	_areaLighting->setBounds(0, _antiAliasing->getY() + _antiAliasing->getHeight(), _bounds.width, 30);
 	addAndMakeVisible(_areaLighting);
 
 	_textureMapping = new ToggleButton("Texture mapping");
+	_textureMapping->addListener(this);
 	_textureMapping->setBounds(0, _areaLighting->getY() + _areaLighting->getHeight(), _bounds.width, 30);
 	addAndMakeVisible(_textureMapping);
 

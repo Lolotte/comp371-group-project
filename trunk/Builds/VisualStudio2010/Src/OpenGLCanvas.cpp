@@ -6,7 +6,7 @@
 #include <gl/glut.h>
 #include "OpenGLCanvas.h"
 #include "textfile.h"
-
+#include "Jittering.h"
 
 bool fogToggle = false;     // Fog on/off
 GLfloat fogDensityStart = 10.0f;	// Fog density
@@ -14,7 +14,8 @@ GLfloat fogDensityEnd = 20.0f;
 
 
 OpenGLCanvas::OpenGLCanvas(void)
-	: _isInitialized(false)
+	: _isInitialized(false), _textureMapping(false), _bumpMapping(false),
+	_antiAliasing(false), _shadowMapping(false), _areaLighting(false)
 {
 	_contextOpenGL.setRenderer (this);
     _contextOpenGL.attachTo (*this);
@@ -66,7 +67,6 @@ void OpenGLCanvas::mouseEnter(const MouseEvent &event)
 
 void OpenGLCanvas::mouseDown(const MouseEvent &event)
 {
-	std::cout << "toto" << std::endl;
 }
 
 void OpenGLCanvas::mouseWheelMove(const MouseEvent &event)
@@ -80,6 +80,8 @@ void OpenGLCanvas::mouseExit (const MouseEvent &event)
 void OpenGLCanvas::mouseDoubleClick (const MouseEvent &event)
 {
 }
+
+
 
 // key listener
 bool 	OpenGLCanvas::keyPressed (const KeyPress &key, Component *originatingComponent)
@@ -204,24 +206,59 @@ void OpenGLCanvas::renderOpenGL()
 		glDisable(GL_FOG);
 	}
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
-	glEnable(GL_DEPTH_TEST);
+	if (_antiAliasing)
+		this->applyAntiAliasing();
+	else
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
+		glEnable(GL_DEPTH_TEST);
 
-	// Matrix setup
-	glMatrixMode(GL_PROJECTION);
-	glViewport(0, 0, 900, 768);
-	glLoadIdentity();
-	gluPerspective(40, (float)900 / (float)768, 0.1, 1000);
+		// Matrix setup
+		glMatrixMode(GL_PROJECTION);
+		glViewport(0, 0, 900, 768);
+		glLoadIdentity();
+		gluPerspective(40, (float)900 / (float)768, 0.1, 1000);
 
-	// Matrix setup
-	glMatrixMode(GL_MODELVIEW);
+		// Matrix setup
+		glMatrixMode(GL_MODELVIEW);
 
+		std::vector<ADrawable *>::iterator it;
+		for (it = _primitives.begin(); it != _primitives.end(); ++it)
+		{
+			(*it)->setupMaterials();
+			(*it)->draw();
+		}
+	}
+}
+
+void OpenGLCanvas::drawPrimitives()
+{
 	std::vector<ADrawable *>::iterator it;
 	for (it = _primitives.begin(); it != _primitives.end(); ++it)
 	{
 		(*it)->setupMaterials();
 		(*it)->draw();
 	}
+}
+
+void OpenGLCanvas::applyAntiAliasing()
+{
+	GLint viewport[4];
+	int iterations;
+	Jittering jitter;
+
+	glGetIntegerv (GL_VIEWPORT, viewport);
+
+	glClear(GL_ACCUM_BUFFER_BIT);
+	for (iterations = 0; iterations < Jittering::MAX_ITERATIONS; iterations++)
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		jitter.accPerspective (40.0, 900.0/768.0, 0.1, 1000.0, JITTER8[iterations].x, JITTER8[iterations].y, 0.0, 0.0, 1.0);
+		this->drawPrimitives();
+		glAccum(GL_ACCUM, 1.0/ Jittering::MAX_ITERATIONS);
+	}
+	glAccum (GL_RETURN, 1.0);
+	glFlush();
 }
 
 void OpenGLCanvas::newOpenGLContextCreated ()
