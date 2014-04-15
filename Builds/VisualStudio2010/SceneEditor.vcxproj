@@ -974,6 +974,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_gui_basics\juce_gui_basics.cpp" />
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_gui_extra\juce_gui_extra.cpp" />
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_opengl\juce_opengl.cpp" />
+    <ClCompile Include="Arcball.cpp" />
     <ClCompile Include="AreaLight.cpp" />
     <ClCompile Include="Jittering.cpp" />
     <ClCompile Include="ShadersManager.cpp" />
@@ -983,8 +984,6 @@
     <ClCompile Include="Src\PrimitiveCreator.cpp" />
     <ClCompile Include="Src\RenderSettings.cpp" />
     <ClCompile Include="Src\Shapes.cpp" />
-    <ClCompile Include="Src\TTrackBall.cpp" />
-    <ClCompile Include="Src\TTuple.cpp" />
     <ClCompile Include="textfile.cpp" />
     <ClCompile Include="TextureMapping.cpp" />
   </ItemGroup>
@@ -1342,6 +1341,7 @@
     <ClInclude Include="..\..\..\Project\JUCE-3.0.5\JUCE-3.0.5\modules\juce_opengl\juce_opengl.h" />
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
+    <ClInclude Include="Arcball.h" />
     <ClInclude Include="AreaLight.h" />
     <ClInclude Include="Jittering.h" />
     <ClInclude Include="ShadersManager.h" />
@@ -1352,8 +1352,6 @@
     <ClInclude Include="Src\PrimitiveCreator.h" />
     <ClInclude Include="Src\RenderSettings.h" />
     <ClInclude Include="Src\Shapes.h" />
-    <ClInclude Include="Src\TTrackBall.h" />
-    <ClInclude Include="Src\TTuple.h" />
     <ClInclude Include="textfile.h" />
     <ClInclude Include="TextureMapping.h" />
   </ItemGroup>
