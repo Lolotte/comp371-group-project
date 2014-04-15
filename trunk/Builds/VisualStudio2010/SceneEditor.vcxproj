@@ -974,6 +974,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_gui_basics\juce_gui_basics.cpp" />
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_gui_extra\juce_gui_extra.cpp" />
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_opengl\juce_opengl.cpp" />
+    <ClCompile Include="AreaLight.cpp" />
     <ClCompile Include="Jittering.cpp" />
     <ClCompile Include="ShadersManager.cpp" />
     <ClCompile Include="Src\Camera.cpp" />
@@ -1341,6 +1342,7 @@
     <ClInclude Include="..\..\..\Project\JUCE-3.0.5\JUCE-3.0.5\modules\juce_opengl\juce_opengl.h" />
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
+    <ClInclude Include="AreaLight.h" />
     <ClInclude Include="Jittering.h" />
     <ClInclude Include="ShadersManager.h" />
     <ClInclude Include="Src\Camera.h" />

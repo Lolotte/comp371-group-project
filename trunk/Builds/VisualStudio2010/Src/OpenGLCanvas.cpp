@@ -24,11 +24,13 @@ OpenGLCanvas::OpenGLCanvas(void)
 	_shadersManager = new ShadersManager(_contextOpenGL);
 	_textureMappingManager = new TextureMapping;
 	_mainCamera = new Camera;
+	_areaLight = new AreaLight;
 }
 
 
 OpenGLCanvas::~OpenGLCanvas(void)
 {
+	delete _areaLight;
 	delete _mainCamera;
 
 	_shadersManager->release();
@@ -48,13 +50,15 @@ void OpenGLCanvas::initialize()
 	addMouseListener(this, true);
 	addKeyListener(this);
 	this->setWantsKeyboardFocus(true);
-	this->setupLights();
+	_areaLight->initialize();
+	//this->setupLights();
 	this->setWantsKeyboardFocus(true);
 	this->initializeKeys();
 	fogToggle = false;			 // Fog on/off
 	fogDensityStart = 10.0f;	// Fog density startpoint
 	fogDensityEnd = 20.0f;		// Fog density endpoint
 
+	
 	_shadersManager->addShader("textureMapping.frag", "textureMapping.vert");
 	//_shadersManager->addShader("myShader.frag", "myShader.vert");
 	//_shadersManager->addShader("phong.frag", "phong.vert");
@@ -82,56 +86,56 @@ void OpenGLCanvas::initializeKeys()
 void OpenGLCanvas::rotateCameraLeft()
 {
 	_mainCamera->rotateY(5.0);
-	renderOpenGL();
+	repaint();
 }
 
 void OpenGLCanvas::rotateCameraRight()
 {
 	_mainCamera->rotateY(-5.0);
-	renderOpenGL();
+	repaint();
 }
 
 void OpenGLCanvas::moveForward()
 {
 	_mainCamera->moveForwards( -0.1 ) ;
-	renderOpenGL();
+	repaint();
 }
 
 void OpenGLCanvas::moveBackward()
 {
 	_mainCamera->moveForwards( 0.1 ) ;
-	renderOpenGL();
+	repaint();
 }
 
 void OpenGLCanvas::rotateCameraTop()
 {
 	_mainCamera->rotateX(5.0);
-	renderOpenGL();
+	repaint();
 }
 
 void OpenGLCanvas::rotateCameraBottom()
 {
 	_mainCamera->rotateX(-5.0);
-	renderOpenGL();
+	repaint();
 }
 
 void OpenGLCanvas::strafeLeft()
 {
 	_mainCamera->strafeRight(-0.1);
-	renderOpenGL();
+	repaint();
 }
 
 void OpenGLCanvas::strafeRight()
 {
 	_mainCamera->strafeRight(0.1);
-	renderOpenGL();
+	repaint();
 }
 
 // a changer
 void OpenGLCanvas::reset()
 {
 	_mainCamera->move(Vector3<GLfloat>(0.0,0.3,0.0));
-	renderOpenGL();
+	repaint();
 }
 
 void OpenGLCanvas::selectPreviousItem()
@@ -225,7 +229,9 @@ bool 	OpenGLCanvas::keyPressed (const KeyPress &key, Component *originatingCompo
 	ToggleKey tk = _keyEvents[key.getKeyCode()];
 	if (tk != NULL)
 		(this->*tk)();
-
+	_areaLight->keyEvent(key.getKeyCode());
+	renderOpenGL();
+	repaint();
 	return true;
 }
 
@@ -327,7 +333,8 @@ void OpenGLCanvas::renderOpenGL()
 		glLoadIdentity();
 		glPushMatrix();
 		_mainCamera->render();
-
+		_areaLight->render();
+		glutSolidTeapot(1);
 		if (_textureMapping)
 			_textureMappingManager->apply(_shadersManager->getProgramID());
 

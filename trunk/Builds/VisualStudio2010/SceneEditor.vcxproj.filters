@@ -1083,6 +1083,7 @@
     <ClCompile Include="ShadersManager.cpp" />
     <ClCompile Include="TextureMapping.cpp" />
     <ClCompile Include="Src\Camera.cpp" />
+    <ClCompile Include="AreaLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\MainComponent.h">
@@ -2157,6 +2158,7 @@
     <ClInclude Include="ShadersManager.h" />
     <ClInclude Include="TextureMapping.h" />
     <ClInclude Include="Src\Camera.h" />
+    <ClInclude Include="AreaLight.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\Project\JUCE-3.0.5\JUCE-3.0.5\modules\juce_core\juce_module_info">
