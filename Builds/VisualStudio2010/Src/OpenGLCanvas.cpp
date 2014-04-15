@@ -16,7 +16,7 @@ GLfloat fogDensityEnd = 20.0f;
 
 OpenGLCanvas::OpenGLCanvas(void)
 	: _isInitialized(false), _textureMapping(false), _bumpMapping(false),
-	_antiAliasing(false), _shadowMapping(false), _areaLighting(false), _selectedObject(NULL)
+	_antiAliasing(false), _shadowMapping(false), _areaLighting(false), _selectedObject(NULL), _drag(false)
 {
 	_contextOpenGL.setRenderer (this);
     _contextOpenGL.attachTo (*this);
@@ -230,9 +230,6 @@ void OpenGLCanvas::decreaseFogDensity()
 	fogDensityEnd -= 0.1f;	
 }
 
-
-bool drag = false;
-
 // Mouse listener
 void OpenGLCanvas::mouseDrag(const MouseEvent &event)
 {
@@ -251,16 +248,16 @@ void OpenGLCanvas::mouseEnter(const MouseEvent &event)
 
 void OpenGLCanvas::mouseDown(const MouseEvent &event)
 {
-	if (event.mods.isLeftButtonDown() && !drag)
+	if (event.mods.isLeftButtonDown() && !_drag)
 	{
 		_arcball.setMouse(event.x, event.y);
-		drag = true;
+		_drag = true;
 	}
 }
 
 void OpenGLCanvas::mouseUp(const MouseEvent &event)
 {
-	drag = false;
+	_drag = false;
 }
 
 void OpenGLCanvas::mouseWheelMove(const MouseEvent &event)
@@ -377,32 +374,20 @@ void OpenGLCanvas::renderOpenGL()
 
 void	OpenGLCanvas::setDiffuseMaterial(Colour diffuseColour)
 {
-	std::vector<ADrawable *>::iterator it;
-	for (it = _primitives.begin(); it != _primitives.end(); ++it)
-	{
-		if (_materialsOn)
-			(*it)->setupMaterials(ADrawable::MaterialType::DIFFUSE, diffuseColour);
-	}
+	if (_materialsOn && _selectedObject)
+		_selectedObject->setupMaterials(ADrawable::MaterialType::DIFFUSE, diffuseColour);
 }
 
 void	OpenGLCanvas::setShininess(double value)
 {
-	std::vector<ADrawable *>::iterator it;
-	for (it = _primitives.begin(); it != _primitives.end(); ++it)
-	{
-		if (_materialsOn)
-			(*it)->setShininess(value);
-	}
+	if (_materialsOn && _selectedObject)
+		_selectedObject->setShininess(value);
 }
 
 void	OpenGLCanvas::setSpecularMaterial(Colour specularColour)
 {
-	std::vector<ADrawable *>::iterator it;
-	for (it = _primitives.begin(); it != _primitives.end(); ++it)
-	{
-		if (_materialsOn)
-			(*it)->setupMaterials(ADrawable::MaterialType::SPECULAR, specularColour);
-	}
+	if (_materialsOn && _selectedObject)
+		_selectedObject->setupMaterials(ADrawable::MaterialType::SPECULAR, specularColour);
 }
 
 void	OpenGLCanvas::enableMaterials(bool value)
