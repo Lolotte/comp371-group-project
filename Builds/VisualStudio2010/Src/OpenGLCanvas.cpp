@@ -312,11 +312,14 @@ void OpenGLCanvas::fog()
 
 void OpenGLCanvas::renderOpenGL()
 {
-	if (_textureMapping)
+	if (_textureMapping && !_shadersManager->isActive())
+	{
+		_shadersManager->addShader("textureMapping.frag", "textureMapping.vert");
 		_textureMappingManager->loadTexture(_textureFile.getFullPathName());
-	
+	}
 	if (!_shadersManager->isActive() && !_shaderToActive.isEmpty())
 		_shadersManager->addShader(_shaderToActive + ".frag", _shaderToActive + ".vert");
+
 	_shadersManager->use();
 
 	if (!_isInitialized)
@@ -344,9 +347,9 @@ void OpenGLCanvas::renderOpenGL()
 
 		// Matrix setup
 		glMatrixMode(GL_PROJECTION);
-		glViewport(0, 0, 900, 768);
+		glViewport(0, 0, 850, 768);
 		glLoadIdentity();
-		gluPerspective(40, (float)900 / (float)768, 0.1, 1000);
+		gluPerspective(40, (float)850 / (float)768, 0.1, 1000);
 
 		// Matrix setup
 		glMatrixMode(GL_MODELVIEW);
@@ -355,7 +358,7 @@ void OpenGLCanvas::renderOpenGL()
 		_mainCamera->render();
 		_areaLight->render();
 		
-		if (_textureMapping)
+		if (_textureMapping && _contextOpenGL.isActive())
 			_textureMappingManager->apply(_shadersManager->getProgramID());
 
 		std::vector<ADrawable *>::iterator it;
@@ -373,6 +376,9 @@ void OpenGLCanvas::renderOpenGL()
 
 void	OpenGLCanvas::enableShader(String shader)
 {
+	if (_textureMapping)
+		return ;
+
 	this->disableShader();
 	if (shader == "Phong")
 		_shaderToActive = "phong";
@@ -383,8 +389,7 @@ void	OpenGLCanvas::enableShader(String shader)
 	else if (shader == "Two colors")
 		_shaderToActive = "twocolor";
 	else if (shader == "Cook torrance")
-		_shaderToActive = "phong";
-
+		_shaderToActive = "cooktorrance";
 }
 
 void	OpenGLCanvas::disableShader()
@@ -445,7 +450,7 @@ void OpenGLCanvas::applyAntiAliasing()
 	for (iterations = 0; iterations < Jittering::MAX_ITERATIONS; iterations++)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		jitter.accPerspective (40.0, 900.0/768.0, 0.1, 1000.0, JITTER8[iterations].x, JITTER8[iterations].y, 0.0, 0.0, 1.0);
+		jitter.accPerspective (40.0, 850.0/768.0, 0.1, 1000.0, JITTER8[iterations].x, JITTER8[iterations].y, 0.0, 0.0, 1.0);
 		this->drawPrimitives();
 		glAccum(GL_ACCUM, 1.0/ Jittering::MAX_ITERATIONS);
 	}
