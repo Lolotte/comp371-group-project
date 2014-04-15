@@ -11,10 +11,27 @@ public:
 	{
 	}
 
+	void add(Vector3 const& other)
+	{
+		this->x += other.x;
+		this->y += other.y;
+		this->z += other.z;
+	}
+
 	T x;
 	T y;
 	T z;
 };
+
+template<typename T>
+Vector3<T> add(Vector3<T> const& v1, Vector3<T> const& v2)
+{
+	Vector3<T> result;
+
+	result.x = v1.x + v2.x;
+	result.y = v1.y + v2.y;
+	result.z = v1.z + v2.z;
+}
 
 template<typename T>
 class Vector2

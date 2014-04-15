@@ -5,8 +5,9 @@
 #include "ShadersManager.h"
 //#include "SOIL.h"
 #include "TextureMapping.h"
+#include "Camera.h"
 
-#include <vector>
+#include <map>
 
 class OpenGLCanvas : public Component, public OpenGLRenderer, public MouseListener, public KeyListener
 {
@@ -14,6 +15,7 @@ public:
 	OpenGLCanvas(void);
 	~OpenGLCanvas(void);
 
+	void initializeKeys();
 	void initialize();
 	void addPrimitive(ADrawable *);
 	virtual void renderOpenGL();
@@ -45,9 +47,28 @@ public:
 	inline void setAreaLighting(bool value);
 		
 private:
+
+	typedef void (OpenGLCanvas::*ToggleKey)();
+
 	void setupLights();
 	void applyAntiAliasing();
 	void drawPrimitives();
+
+	// key events
+	void selectPreviousItem();
+	void selectNextItem();
+	void activateFog();
+	void increaseFogDensity();
+	void decreaseFogDensity();
+	void rotateCameraLeft();
+	void rotateCameraRight();
+	void moveForward();
+	void moveBackward();
+	void rotateCameraTop();
+	void rotateCameraBottom();
+	void strafeLeft();
+	void strafeRight();
+	void reset();
 
 	bool _isInitialized;
 	OpenGLContext _contextOpenGL;
@@ -61,6 +82,8 @@ private:
 	File _textureFile;
 	ShadersManager *_shadersManager;
 	TextureMapping *_textureMappingManager;
+	Camera *_mainCamera;
+	std::map<int, ToggleKey> _keyEvents;
 
 	bool fogToggle;
 	GLfloat fogDensityStart, fogDensityEnd;
