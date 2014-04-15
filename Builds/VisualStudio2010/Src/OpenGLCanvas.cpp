@@ -147,7 +147,7 @@ void OpenGLCanvas::selectPreviousItem()
 	if (it != _primitives.begin())
 		it--;
 	else
-		it = _primitives.end();
+		it = _primitives.end() - 1;
 	(*it)->selected = true;
 }
 
@@ -157,7 +157,7 @@ void OpenGLCanvas::selectNextItem()
 	it = _primitives.begin();
 
 	(*it)->selected = false;
-	if (it != _primitives.end())
+	if (it != _primitives.end() - 1)
 		it++;
 	else
 		it = _primitives.begin();
@@ -196,6 +196,8 @@ void OpenGLCanvas::mouseDrag(const MouseEvent &event)
 				(*it)->scale(event.getDistanceFromDragStartY());
 		}
 	}
+	renderOpenGL();
+	repaint();
 }
 
 void OpenGLCanvas::mouseEnter(const MouseEvent &event)

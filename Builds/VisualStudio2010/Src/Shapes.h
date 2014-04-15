@@ -3,6 +3,7 @@
 #include "TTrackBall.h"
 #include "TTuple.h"
 #include "..\..\JuceLibraryCode\JuceHeader.h"
+#include "DataStructures.hpp"
 
 class ADrawable {
 	// An abstract class for objects that can be drawn.
@@ -35,7 +36,8 @@ protected:
 	TMatrix4x4 view;
 	TTrackBall ball;	// Trackball used to rotate the object
 	char num;			// Object's name.
-	GLfloat x, y, z, w, h;	// Object's position and dimensions.
+	GLfloat x, y, z;	// Object's position and dimensions.
+	Vector3<GLfloat> _scale;
 };
 
 class Sphere : public ADrawable {

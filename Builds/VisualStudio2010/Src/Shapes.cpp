@@ -10,13 +10,13 @@ using namespace std;
 
 static int shapeCounter=0;
 
-ADrawable::ADrawable() {
+ADrawable::ADrawable()
+	: _scale(1.0, 1.0, 1.0)
+{
 	// Constructor sets initial values.
 	x = 0.0;
 	y = 0.0;
 	z = 0.0;
-	w = 1.0;
-	h = 1.0;
 	rotating = false;
 	scaling = false;
 	moving = false;
@@ -68,13 +68,12 @@ void ADrawable::resetMaterials()
 }
 
 void ADrawable::move(int x, int y) {
-	
 	float deltay = ((float) (x)) * 0.01;
 	float deltax = ((float) (y)) * 0.01;
-	glPushMatrix();
-	x += deltax;
-	y += deltay;
-	glTranslatef(x, y, 0);
+	//glPushMatrix();
+	this->x += deltax;
+	this->y += deltay;
+	//glTranslatef(x + deltax, y + deltay, 0);
 }
 
 void ADrawable::rotate(int mx, int my) {
@@ -86,14 +85,25 @@ void ADrawable::rotate(int mx, int my) {
 }
 
 void ADrawable::scale(int y){
-	glPushMatrix();
-	float factor = 0.5;
+
+	/*float factor = 0.5;
 	factor = 0.005;
 	float delta = ((float) (y)) * factor;
 	w *= 1.005*delta;
-	h *= delta;
-	glScalef(w,h, 1);
-	glPushMatrix();
+	h *= delta;*/
+	if (y > 0)
+	{
+		_scale.x -= 0.01f;
+		_scale.y -= 0.01f;
+		_scale.z -= 0.01f;
+	}
+	else
+	{
+		_scale.x += 0.01f;
+		_scale.y += 0.01f;
+		_scale.z += 0.01f;
+	}
+
 }
 
 
@@ -113,7 +123,7 @@ void Sphere::draw() {
 
 void Cone::draw() {
 	glPushMatrix();
-	//glMultMatrixf((float*) ball.getMatrix().getBuffer());
+	glMultMatrixf((float*) ball.getMatrix().getBuffer());
 	glTranslatef(0, 0, -20);
 	glTranslatef(x, y, z);
 	glutSolidCone(1.5, 3, 100, 100);
@@ -124,9 +134,10 @@ void Cone::draw() {
 
 void Teapot::draw() {
 	glPushMatrix();
-	//glMultMatrixf((float*) ball.getMatrix().getBuffer());
+	glMultMatrixf((float*) ball.getMatrix().getBuffer());
 	glTranslatef(0, 0, -20);
 	glTranslatef(x, y, z);
+	glScalef(_scale.x,_scale.y, _scale.z);
 	glFrontFace(GL_CW);
 	glutSolidTeapot(3);
 	glFrontFace(GL_CCW);
@@ -136,7 +147,7 @@ void Teapot::draw() {
 
 void Torus::draw() {
 	glPushMatrix();
-	//glMultMatrixf((float*) ball.getMatrix().getBuffer());
+	glMultMatrixf((float*) ball.getMatrix().getBuffer());
 	glTranslatef(0, 0, -20);
 	glTranslatef(x, y, z);
 	glutSolidTorus(0.9, 1.1, 100, 100);
@@ -147,7 +158,7 @@ void Torus::draw() {
 
 void Tetrahedron::draw() {
 	glPushMatrix();
-	//glMultMatrixf((float*) ball.getMatrix().getBuffer());
+	glMultMatrixf((float*) ball.getMatrix().getBuffer());
 	glTranslatef(0, 0, -20);
 	glTranslatef(x, y, z);
 	glutSolidTetrahedron();
@@ -157,7 +168,7 @@ void Tetrahedron::draw() {
 
 void Cube::draw() {
 	glPushMatrix();
-	//glMultMatrixf((float*) ball.getMatrix().getBuffer());
+	glMultMatrixf((float*) ball.getMatrix().getBuffer());
 	glTranslatef(0, 0, -10);
 	glRotatef(45, 0, 1, 0);
 	glTranslatef(x, y, z);
