@@ -6,6 +6,7 @@
 #include "TextureMapping.h"
 #include "Camera.h"
 #include "AreaLight.h"
+#include "Arcball.h"
 
 #include <map>
 
@@ -27,6 +28,7 @@ public:
 	virtual void mouseDrag(const MouseEvent &event);
 	virtual void mouseEnter(const MouseEvent &event);
 	virtual void mouseDown(const MouseEvent &event);
+	virtual void mouseUp(const MouseEvent &event);
 	virtual void mouseWheelMove(const MouseEvent &event);
 	virtual void mouseExit (const MouseEvent &event);
 	virtual void mouseDoubleClick (const MouseEvent &event);
@@ -50,9 +52,12 @@ private:
 
 	typedef void (OpenGLCanvas::*ToggleKey)();
 
-	void setupLights();
 	void applyAntiAliasing();
 	void drawPrimitives();
+
+	
+	Vector3<GLfloat> GetArcballVector(int x, int y);
+	void rotateAccToArcball(int mx, int my);
 
 	// key events
 	void selectPreviousItem();
@@ -90,6 +95,7 @@ private:
 	AreaLight *_areaLight;
 	std::map<int, ToggleKey> _keyEvents;
 	ADrawable *_selectedObject;
+	Arcball _arcball;
 
 	bool fogToggle;
 	GLfloat fogDensityStart, fogDensityEnd;

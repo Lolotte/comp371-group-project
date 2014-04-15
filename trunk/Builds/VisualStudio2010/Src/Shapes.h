@@ -1,7 +1,6 @@
 #ifndef Shapes_h
 #define Shapes_h
-#include "TTrackBall.h"
-#include "TTuple.h"
+
 #include "..\..\JuceLibraryCode\JuceHeader.h"
 #include "DataStructures.hpp"
 
@@ -14,7 +13,7 @@ public:
 	ADrawable();
 	virtual ~ADrawable() {}
 	virtual void move(Vector3<GLfloat> const&);
-	virtual void rotate(int mx, int my);
+	virtual void rotate(GLfloat angle, Vector3<GLfloat> const& rotation);
 	virtual void scale(int y);
 	virtual void draw();
 	void setShininess(double);
@@ -32,11 +31,12 @@ protected:
 	Colour _diffuseColor;
 	Colour _specularColor;
 	double _shininess;
-	TMatrix4x4 view;
-	TTrackBall ball;	// Trackball used to rotate the object
+
 	char num;			// Object's name.
-	GLfloat x, y, z;	// Object's position and dimensions.
+	GLfloat x, y, z;	// Object's position
 	Vector3<GLfloat> _scale;
+	GLfloat _angle;
+	Vector3<GLfloat> _rotation;
 };
 
 class Sphere : public ADrawable {

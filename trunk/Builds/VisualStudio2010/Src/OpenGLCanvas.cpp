@@ -1,12 +1,13 @@
 #include <iostream>
-//#include <Windows.h>
 #include "glew\include\GL\glew.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include <gl/glut.h>
+#include <cmath>
 #include "OpenGLCanvas.h"
 #include "textfile.h"
 #include "Jittering.h"
+#include "DataStructures.hpp"
 
 bool fogToggle = false;     // Fog on/off
 GLfloat fogDensityStart = 10.0f;	// Fog density
@@ -15,7 +16,7 @@ GLfloat fogDensityEnd = 20.0f;
 
 OpenGLCanvas::OpenGLCanvas(void)
 	: _isInitialized(false), _textureMapping(false), _bumpMapping(false),
-	_antiAliasing(false), _shadowMapping(false), _areaLighting(false)
+	_antiAliasing(false), _shadowMapping(false), _areaLighting(false), _selectedObject(NULL)
 {
 	_contextOpenGL.setRenderer (this);
     _contextOpenGL.attachTo (*this);
@@ -25,8 +26,8 @@ OpenGLCanvas::OpenGLCanvas(void)
 	_textureMappingManager = new TextureMapping;
 	_mainCamera = new Camera;
 	_areaLight = new AreaLight;
+	this->setInterceptsMouseClicks(true, true);
 }
-
 
 OpenGLCanvas::~OpenGLCanvas(void)
 {
@@ -177,13 +178,19 @@ void OpenGLCanvas::selectPreviousItem()
 	std::vector<ADrawable *>::iterator it;
 	it = _primitives.begin();
 	
-	(*it)->selected = false;
-	if (it != _primitives.begin())
-		it--;
-	else
-		it = _primitives.end() - 1;
-	(*it)->selected = true;
-	_selectedObject = *it;
+	for (; it != _primitives.end(); ++it)
+	{
+		if ((*it)->selected)
+		{
+			(*it)->selected = false;
+			if (it != _primitives.begin())
+				--it;
+			else
+				it = _primitives.end() - 1;
+			(*it)->selected = true;
+			_selectedObject = *it;
+		}
+	}
 }
 
 void OpenGLCanvas::selectNextItem()
@@ -191,13 +198,19 @@ void OpenGLCanvas::selectNextItem()
 	std::vector<ADrawable *>::iterator it;
 	it = _primitives.begin();
 
-	(*it)->selected = false;
-	if (it != _primitives.end() - 1)
-		it++;
-	else
-		it = _primitives.begin();
-	(*it)->selected = true;
-	_selectedObject = *it;
+	for (; it != _primitives.end(); ++it)
+	{
+		if ((*it)->selected)
+		{
+			(*it)->selected = false;
+			if (it != _primitives.end() - 1)
+				it++;
+			else
+				it = _primitives.begin();
+			(*it)->selected = true;
+			_selectedObject = *it;
+		}
+	}
 }
 
 void OpenGLCanvas::activateFog()
@@ -217,21 +230,17 @@ void OpenGLCanvas::decreaseFogDensity()
 	fogDensityEnd -= 0.1f;	
 }
 
+
+bool drag = false;
+
 // Mouse listener
 void OpenGLCanvas::mouseDrag(const MouseEvent &event)
 {
-	std::vector<ADrawable *>::iterator it;
-	for (it = _primitives.begin(); it != _primitives.end(); ++it)
-	{
-		if ((*it)->selected){
-			//if (event.mods.isRightButtonDown())
-			//	(*it)->move(event.getDistanceFromDragStartX(), event.getDistanceFromDragStartY());
-			if (event.mods.isLeftButtonDown())
-				(*it)->rotate(event.getDistanceFromDragStartX(), event.getDistanceFromDragStartY());
-			if (event.mods.isMiddleButtonDown())
-				(*it)->scale(event.getDistanceFromDragStartY());
-		}
-	}
+	if (event.mods.isLeftButtonDown())
+		_arcball.rotateAccToArcball(event.x, event.y, _selectedObject);
+	else if (event.mods.isMiddleButtonDown())
+		_selectedObject->scale(event.getDistanceFromDragStartY());
+
 	renderOpenGL();
 	repaint();
 }
@@ -242,6 +251,16 @@ void OpenGLCanvas::mouseEnter(const MouseEvent &event)
 
 void OpenGLCanvas::mouseDown(const MouseEvent &event)
 {
+	if (event.mods.isLeftButtonDown() && !drag)
+	{
+		_arcball.setMouse(event.x, event.y);
+		drag = true;
+	}
+}
+
+void OpenGLCanvas::mouseUp(const MouseEvent &event)
+{
+	drag = false;
 }
 
 void OpenGLCanvas::mouseWheelMove(const MouseEvent &event)
@@ -279,39 +298,6 @@ bool 	OpenGLCanvas::keyStateChanged (bool isKeyDown, Component *originatingCompo
 	return true;
 }
 
-
-void OpenGLCanvas::setupLights()
-{
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-
-	GLfloat light_position1[] = { -5, 0, 5, 0 };
-	GLfloat light1[] = { 1, 1, 1, 1 };
-	GLfloat light2[] = { 0.5, 0.5, 0.5, 1.0 };
-
-	//ambient light is reflected environmental light 
-	GLfloat ambient[] = { 0.2, 0.2, 0.2, 0 };
-
-	// setup 
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);	
-	glShadeModel(GL_SMOOTH);
-
-	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
-	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-	
-	glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, 10);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, light2);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, light1);
-	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position1);
-	
-	glEnable(GL_LIGHT0);	
-    glEnable(GL_LIGHTING);
-
-	glPopMatrix();
-}
 
 void OpenGLCanvas::fog()
 {
@@ -470,6 +456,9 @@ void OpenGLCanvas::openGLContextClosing ()
 
 void OpenGLCanvas::addPrimitive(ADrawable *shape)
 {
+	if (_selectedObject)
+		_selectedObject->selected = false;
 	_selectedObject = shape;
+	shape->selected = true;
 	_primitives.push_back(shape);
 }

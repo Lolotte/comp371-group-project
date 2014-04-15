@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+
 template<typename T>
 class Vector3
 {
@@ -16,6 +18,28 @@ public:
 		this->x += other.x;
 		this->y += other.y;
 		this->z += other.z;
+	}
+
+	float magnitude()
+	{
+		return sqrtf(this->x * this->x + this->y * this->y + this->z * this->z);
+	}
+
+	void normalize()
+	{
+		this->x /= magnitude();
+		this->y /= magnitude();
+		this->z /= magnitude();
+	}
+
+	float Vector3::dot(const Vector3& rhs) const
+	{
+		 return (x*rhs.x + y*rhs.y + z*rhs.z);
+	}
+	
+	Vector3 Vector3::cross(const Vector3& rhs) const 
+	{
+		 return Vector3(y*rhs.z - z*rhs.y, z*rhs.x - x*rhs.z, x*rhs.y - y*rhs.x);
 	}
 
 	T x;
