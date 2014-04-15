@@ -48,6 +48,9 @@ void	PrimitiveCreator::createPrimitive(int id)
 {
 	ADrawable *shape;
 
+	if (_primitivesChoices->getText().isEmpty())
+		return;
+
 	switch (id)
 	{
 	case 1:
