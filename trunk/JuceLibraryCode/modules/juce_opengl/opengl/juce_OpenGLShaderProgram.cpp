@@ -80,8 +80,8 @@ bool OpenGLShaderProgram::addShader (const String& code, GLenum type)
        #if JUCE_DEBUG && ! JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR
         // Your GLSL code contained compile errors!
         // Hopefully this compile log should help to explain what went wrong.
-        DBG (errorLog);
-        jassertfalse;
+      /*  DBG (errorLog);
+        jassertfalse;*/
        #endif
 
         return false;

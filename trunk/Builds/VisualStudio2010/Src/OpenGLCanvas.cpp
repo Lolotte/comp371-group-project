@@ -16,16 +16,17 @@ GLfloat fogDensityEnd = 20.0f;
 
 OpenGLCanvas::OpenGLCanvas(void)
 	: _isInitialized(false), _textureMapping(false), _bumpMapping(false),
-	_antiAliasing(false), _shadowMapping(false), _areaLighting(false), _selectedObject(NULL), _drag(false)
+	_antiAliasing(false), _shadowMapping(false), _areaLighting(false),
+	_selectedObject(NULL), _drag(false), _shaderToActive(String::empty)
 {
 	_contextOpenGL.setRenderer (this);
     _contextOpenGL.attachTo (*this);
     _contextOpenGL.setContinuousRepainting (true);
 	setBounds(0, 0, 850, 768);
-	_shadersManager = new ShadersManager(_contextOpenGL);
 	_textureMappingManager = new TextureMapping;
 	_mainCamera = new Camera;
 	_areaLight = new AreaLight;
+	_shadersManager = new ShadersManager(_contextOpenGL);
 	this->setInterceptsMouseClicks(true, true);
 }
 
@@ -47,6 +48,7 @@ OpenGLCanvas::~OpenGLCanvas(void)
 
 void OpenGLCanvas::initialize()
 {
+	glEnable(GL_VERTEX_PROGRAM_TWO_SIDE_ARB) ;
 	glewInit();
 	addMouseListener(this, true);
 	addKeyListener(this);
@@ -58,11 +60,6 @@ void OpenGLCanvas::initialize()
 	fogToggle = false;			 // Fog on/off
 	fogDensityStart = 10.0f;	// Fog density startpoint
 	fogDensityEnd = 20.0f;		// Fog density endpoint
-
-	
-	_shadersManager->addShader("textureMapping.frag", "textureMapping.vert");
-	//_shadersManager->addShader("myShader.frag", "myShader.vert");
-	//_shadersManager->addShader("phong.frag", "phong.vert");
 }
 
 void OpenGLCanvas::initializeKeys()
@@ -317,8 +314,10 @@ void OpenGLCanvas::renderOpenGL()
 {
 	if (_textureMapping)
 		_textureMappingManager->loadTexture(_textureFile.getFullPathName());
-	if (_shadersManager->isActive())
-		_shadersManager->use();
+	
+	if (!_shadersManager->isActive() && !_shaderToActive.isEmpty())
+		_shadersManager->addShader(_shaderToActive + ".frag", _shaderToActive + ".vert");
+	_shadersManager->use();
 
 	if (!_isInitialized)
 	{
@@ -370,6 +369,29 @@ void OpenGLCanvas::renderOpenGL()
 		}
 		glPopMatrix();
 	}
+}
+
+void	OpenGLCanvas::enableShader(String shader)
+{
+	this->disableShader();
+	if (shader == "Phong")
+		_shaderToActive = "phong";
+	else if (shader == "Toon")
+		_shaderToActive = "myShader";
+	else if (shader == "Flat")
+		_shaderToActive = "flat";
+	else if (shader == "Two colors")
+		_shaderToActive = "twocolor";
+	else if (shader == "Cook torrance")
+		_shaderToActive = "phong";
+
+}
+
+void	OpenGLCanvas::disableShader()
+{
+	_shadersManager->release();
+	_shaderToActive = String::empty;
+	renderOpenGL();
 }
 
 void	OpenGLCanvas::setDiffuseMaterial(Colour diffuseColour)

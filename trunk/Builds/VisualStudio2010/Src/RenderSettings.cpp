@@ -43,14 +43,9 @@ void	RenderSettings::initialize()
 	_intensityAA->setBounds(0, _antiAliasing->getY() + _antiAliasing->getHeight(), _bounds.width, 30);
 	addAndMakeVisible(_intensityAA);
 
-	_areaLighting = new ToggleButton("Area lighting");
-	_areaLighting->addListener(this);
-	_areaLighting->setBounds(0, _intensityAA->getY() + _intensityAA->getHeight(), _bounds.width, 30);
-	addAndMakeVisible(_areaLighting);
-
 	_textureMapping = new ToggleButton("Texture mapping");
 	_textureMapping->addListener(this);
-	_textureMapping->setBounds(0, _areaLighting->getY() + _areaLighting->getHeight(), _bounds.width, 30);
+	_textureMapping->setBounds(0, _intensityAA->getY() + _intensityAA->getHeight(), _bounds.width, 30);
 	addAndMakeVisible(_textureMapping);
 
 	_browseButton = new TextButton;
@@ -87,6 +82,25 @@ void	RenderSettings::initialize()
 	_shininess->setBounds(0, _specularColorSelector->getY() + _specularColorSelector->getHeight(), _bounds.width, 30);
 	addAndMakeVisible(_shininess);
 
+	_shaderChoices = new ComboBox;
+	_shaderChoices->addItem("Phong", 1);
+	_shaderChoices->addItem("Toon", 2);
+	_shaderChoices->addItem("Two colors", 3);
+	_shaderChoices->addItem("Flat", 4);
+	_shaderChoices->setBounds(0, _shininess->getBounds().getY() + _shininess->getBounds().getHeight(), _bounds.width, 30);
+	addAndMakeVisible(_shaderChoices);
+
+	_enableShader = new TextButton;
+	_enableShader->addListener(this);
+	_enableShader->setButtonText("Activate");
+	_enableShader->setBounds(0, _shaderChoices->getY() + _shaderChoices->getHeight(), _bounds.width, 30);
+	addAndMakeVisible(_enableShader);
+
+	_disableShader = new TextButton;
+	_disableShader->addListener(this);
+	_disableShader->setButtonText("Clear");
+	_disableShader->setBounds(0, _enableShader->getY() + _enableShader->getHeight(), _bounds.width, 30);
+	addAndMakeVisible(_disableShader);
 
 	this->initializeListeners();
 }
@@ -97,9 +111,10 @@ void RenderSettings::initializeListeners()
 	_buttonListeners[_shadowMapping] = &RenderSettings::setShadowMapping;
 	_buttonListeners[_antiAliasing] = &RenderSettings::setAntiAliasing;
 	_buttonListeners[_bumpMapping] = &RenderSettings::setBumpMapping;
-	_buttonListeners[_areaLighting] = &RenderSettings::setAreaLighting;
 	_buttonListeners[_browseButton] = &RenderSettings::getTextureFile;
 	_buttonListeners[_materialsOn] = &RenderSettings::enableMaterials;
+	_buttonListeners[_enableShader] = &RenderSettings::enableShader;
+	_buttonListeners[_disableShader] = &RenderSettings::disableShader;
 }
 
 void RenderSettings::changeListenerCallback(ChangeBroadcaster* broadcaster)
@@ -151,6 +166,16 @@ void	RenderSettings::getTextureFile()
 		_openGLCanvas->setTextureMapping(false, _textureFile);
 }
 
+void	RenderSettings::enableShader()
+{
+	_openGLCanvas->enableShader(_shaderChoices->getText());
+}
+
+void	RenderSettings::disableShader()
+{
+	_openGLCanvas->disableShader();
+}
+
 void	RenderSettings::setShadowMapping()
 {
 	_openGLCanvas->setShadowMapping(_shadowMapping->getToggleState());
@@ -164,11 +189,6 @@ void	RenderSettings::setBumpMapping()
 void	RenderSettings::setAntiAliasing()
 {
 	_openGLCanvas->setAntiAliasing(_antiAliasing->getToggleState());
-}
-
-void	RenderSettings::setAreaLighting()
-{
-	_openGLCanvas->setAreaLighting(_areaLighting->getToggleState());
 }
 
 void	RenderSettings::enableMaterials()
