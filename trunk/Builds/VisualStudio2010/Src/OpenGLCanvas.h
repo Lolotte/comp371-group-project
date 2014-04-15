@@ -95,6 +95,7 @@ private:
 	AreaLight *_areaLight;
 	std::map<int, ToggleKey> _keyEvents;
 	ADrawable *_selectedObject;
+	bool _drag;
 	Arcball _arcball;
 
 	bool fogToggle;
