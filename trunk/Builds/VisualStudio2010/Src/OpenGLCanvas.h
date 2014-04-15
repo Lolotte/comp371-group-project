@@ -3,7 +3,6 @@
 #include "Shapes.h"
 #include "textfile.h"
 #include "ShadersManager.h"
-//#include "SOIL.h"
 #include "TextureMapping.h"
 #include "Camera.h"
 #include "AreaLight.h"
@@ -70,7 +69,11 @@ private:
 	void strafeLeft();
 	void strafeRight();
 	void reset();
-
+	void moveSelectedObjectFwdTop();
+	void moveSelectedObjectBackBottom();
+	void moveSelectedObjectLeft();
+	void moveSelectedObjectRight();
+	
 	bool _isInitialized;
 	OpenGLContext _contextOpenGL;
 	std::vector<ADrawable *> _primitives;
@@ -86,6 +89,7 @@ private:
 	Camera *_mainCamera;
 	AreaLight *_areaLight;
 	std::map<int, ToggleKey> _keyEvents;
+	ADrawable *_selectedObject;
 
 	bool fogToggle;
 	GLfloat fogDensityStart, fogDensityEnd;

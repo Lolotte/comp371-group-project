@@ -67,13 +67,11 @@ void ADrawable::resetMaterials()
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, _shininess);
 }
 
-void ADrawable::move(int x, int y) {
-	float deltay = ((float) (x)) * 0.01;
-	float deltax = ((float) (y)) * 0.01;
-	//glPushMatrix();
-	this->x += deltax;
-	this->y += deltay;
-	//glTranslatef(x + deltax, y + deltay, 0);
+void ADrawable::move(Vector3<GLfloat> const& dir)
+{
+	this->x += dir.x;
+	this->y += dir.y;
+	this->z += dir.z;
 }
 
 void ADrawable::rotate(int mx, int my) {
@@ -85,12 +83,6 @@ void ADrawable::rotate(int mx, int my) {
 }
 
 void ADrawable::scale(int y){
-
-	/*float factor = 0.5;
-	factor = 0.005;
-	float delta = ((float) (y)) * factor;
-	w *= 1.005*delta;
-	h *= delta;*/
 	if (y > 0)
 	{
 		_scale.x -= 0.01f;
@@ -114,6 +106,7 @@ void Sphere::draw() {
 	glMultMatrixf((float*) ball.getMatrix().getBuffer());
 	glTranslatef(0, 0, -20);
 	glTranslatef(x, y, z);
+	glScalef(_scale.x,_scale.y, _scale.z);
 	glutSolidSphere(4,100,100);
 	glPopMatrix();
 }
@@ -126,6 +119,7 @@ void Cone::draw() {
 	glMultMatrixf((float*) ball.getMatrix().getBuffer());
 	glTranslatef(0, 0, -20);
 	glTranslatef(x, y, z);
+	glScalef(_scale.x,_scale.y, _scale.z);
 	glutSolidCone(1.5, 3, 100, 100);
 	glPopMatrix();
 }
@@ -150,6 +144,7 @@ void Torus::draw() {
 	glMultMatrixf((float*) ball.getMatrix().getBuffer());
 	glTranslatef(0, 0, -20);
 	glTranslatef(x, y, z);
+	glScalef(_scale.x,_scale.y, _scale.z);
 	glutSolidTorus(0.9, 1.1, 100, 100);
 	glPopMatrix();
 }
@@ -161,6 +156,7 @@ void Tetrahedron::draw() {
 	glMultMatrixf((float*) ball.getMatrix().getBuffer());
 	glTranslatef(0, 0, -20);
 	glTranslatef(x, y, z);
+	glScalef(_scale.x,_scale.y, _scale.z);
 	glutSolidTetrahedron();
 	glPopMatrix();
 }
@@ -170,8 +166,8 @@ void Cube::draw() {
 	glPushMatrix();
 	glMultMatrixf((float*) ball.getMatrix().getBuffer());
 	glTranslatef(0, 0, -10);
-	glRotatef(45, 0, 1, 0);
 	glTranslatef(x, y, z);
+	glScalef(_scale.x,_scale.y, _scale.z);
 	glutSolidCube(2);
 	glPopMatrix();
 }

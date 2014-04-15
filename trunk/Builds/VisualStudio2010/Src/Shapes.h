@@ -13,8 +13,7 @@ public:
 
 	ADrawable();
 	virtual ~ADrawable() {}
-	//virtual void dokey(int key);
-	virtual void move(int x, int y);
+	virtual void move(Vector3<GLfloat> const&);
 	virtual void rotate(int mx, int my);
 	virtual void scale(int y);
 	virtual void draw();

@@ -80,6 +80,10 @@ void OpenGLCanvas::initializeKeys()
 	_keyEvents[67] = &OpenGLCanvas::strafeLeft;
 	_keyEvents[86] = &OpenGLCanvas::strafeRight;
 	_keyEvents[82] = &OpenGLCanvas::reset;
+	_keyEvents[KeyPress::upKey] = &OpenGLCanvas::moveSelectedObjectFwdTop;
+	_keyEvents[KeyPress::downKey] = &OpenGLCanvas::moveSelectedObjectBackBottom;
+	_keyEvents[KeyPress::leftKey] = &OpenGLCanvas::moveSelectedObjectLeft;
+	_keyEvents[KeyPress::rightKey] = &OpenGLCanvas::moveSelectedObjectRight;
 }
 
 // key events
@@ -138,6 +142,36 @@ void OpenGLCanvas::reset()
 	repaint();
 }
 
+void OpenGLCanvas::moveSelectedObjectFwdTop()
+{
+	if (ModifierKeys::getCurrentModifiers().isShiftDown())
+		_selectedObject->move(Vector3<GLfloat>(0, 0, -0.1));
+	else
+		_selectedObject->move(Vector3<GLfloat>(0, 0.1, 0));
+	repaint();
+}
+
+void OpenGLCanvas::moveSelectedObjectBackBottom()
+{
+	if (ModifierKeys::getCurrentModifiers().isShiftDown())
+		_selectedObject->move(Vector3<GLfloat>(0, 0, 0.1));
+	else
+		_selectedObject->move(Vector3<GLfloat>(0, -0.1, 0));
+	repaint();
+}
+
+void OpenGLCanvas::moveSelectedObjectLeft()
+{
+	_selectedObject->move(Vector3<GLfloat>(-0.1f, 0, 0));
+	repaint();
+}
+
+void OpenGLCanvas::moveSelectedObjectRight()
+{
+	_selectedObject->move(Vector3<GLfloat>(0.1f, 0, 0));
+	repaint();
+}
+
 void OpenGLCanvas::selectPreviousItem()
 {
 	std::vector<ADrawable *>::iterator it;
@@ -149,6 +183,7 @@ void OpenGLCanvas::selectPreviousItem()
 	else
 		it = _primitives.end() - 1;
 	(*it)->selected = true;
+	_selectedObject = *it;
 }
 
 void OpenGLCanvas::selectNextItem()
@@ -162,6 +197,7 @@ void OpenGLCanvas::selectNextItem()
 	else
 		it = _primitives.begin();
 	(*it)->selected = true;
+	_selectedObject = *it;
 }
 
 void OpenGLCanvas::activateFog()
@@ -188,8 +224,8 @@ void OpenGLCanvas::mouseDrag(const MouseEvent &event)
 	for (it = _primitives.begin(); it != _primitives.end(); ++it)
 	{
 		if ((*it)->selected){
-			if (event.mods.isRightButtonDown())
-				(*it)->move(event.getDistanceFromDragStartX(), event.getDistanceFromDragStartY());
+			//if (event.mods.isRightButtonDown())
+			//	(*it)->move(event.getDistanceFromDragStartX(), event.getDistanceFromDragStartY());
 			if (event.mods.isLeftButtonDown())
 				(*it)->rotate(event.getDistanceFromDragStartX(), event.getDistanceFromDragStartY());
 			if (event.mods.isMiddleButtonDown())
@@ -227,7 +263,7 @@ bool 	OpenGLCanvas::keyPressed (const KeyPress &key, Component *originatingCompo
 {
 	if (key == KeyPress::escapeKey)
 		JUCEApplication::quit();
-
+	
 	ToggleKey tk = _keyEvents[key.getKeyCode()];
 	if (tk != NULL)
 		(this->*tk)();
@@ -434,5 +470,6 @@ void OpenGLCanvas::openGLContextClosing ()
 
 void OpenGLCanvas::addPrimitive(ADrawable *shape)
 {
+	_selectedObject = shape;
 	_primitives.push_back(shape);
 }
