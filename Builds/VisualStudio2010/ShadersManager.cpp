@@ -2,7 +2,7 @@
 
 
 ShadersManager::ShadersManager(OpenGLContext & contextOpenGL)
-	: _isActive(false)
+	: _isActive(false), _openGLcontext(contextOpenGL)
 {
 	_shaderProgram = new OpenGLShaderProgram(contextOpenGL);
 }
@@ -14,6 +14,8 @@ ShadersManager::~ShadersManager(void)
 
 void ShadersManager::addShader(String const& fragShaderName, String const& vertShaderName)
 {
+	_isActive = true;
+
 	File frag(File::getCurrentWorkingDirectory().getFullPathName() + "\\Shaders\\" + fragShaderName);
 	File vert(File::getCurrentWorkingDirectory().getFullPathName() + "\\Shaders\\" + vertShaderName);
 
@@ -22,14 +24,14 @@ void ShadersManager::addShader(String const& fragShaderName, String const& vertS
 
 	_shaderProgram->addShader(fragStr, GL_FRAGMENT_SHADER);
 	_shaderProgram->addShader(vertStr, GL_VERTEX_SHADER);
-	_shaderProgram->link();
+	if (_openGLcontext.isActive())
+		_shaderProgram->link();
 }
 
 GLuint ShadersManager::getProgramID() const {return _shaderProgram->getProgramID();}
 
 void ShadersManager::use()
 {
-	_isActive = true;
 	_shaderProgram->use();
 }
 

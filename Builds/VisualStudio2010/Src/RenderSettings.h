@@ -23,8 +23,9 @@ private:
 	void setShadowMapping();
 	void setBumpMapping();
 	void setAntiAliasing();
-	void setAreaLighting();
 	void enableMaterials();
+	void enableShader();
+	void disableShader();
 
 	typedef void (RenderSettings::*listener)(void);
 
@@ -35,13 +36,15 @@ private:
 	ToggleButton *_bumpMapping;
 	ToggleButton *_antiAliasing;
 	Slider		*_intensityAA;
-	ToggleButton *_areaLighting;
 	ToggleButton *_textureMapping;
 	TextButton	*_browseButton;
 	ToggleButton *_materialsOn;
 	ColourSelector *_materialColorSelector;
 	ColourSelector *_specularColorSelector;
 	Slider		*_shininess;
+	ComboBox	*_shaderChoices;
+	TextButton *_enableShader;
+	TextButton *_disableShader;
 	Label *_textureName;
 	File _textureFile;
 	std::map<Button *, listener> _buttonListeners;

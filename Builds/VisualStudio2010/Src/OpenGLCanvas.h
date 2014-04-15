@@ -41,13 +41,15 @@ public:
 	void setDiffuseMaterial(Colour diffuseColor);
 	void setSpecularMaterial(Colour specularColor);
 	void enableMaterials(bool value);
+	void enableShader(String shader);
+	void disableShader();
 	void setTextureMapping(bool value, File file);
 	inline void setTextureMapping(bool value);
 	inline void setBumpMapping(bool value);
 	inline void setAntiAliasing(bool value);
 	inline void setShadowMapping(bool value);
 	inline void setAreaLighting(bool value);
-		
+	
 private:
 
 	typedef void (OpenGLCanvas::*ToggleKey)();
@@ -97,6 +99,7 @@ private:
 	ADrawable *_selectedObject;
 	bool _drag;
 	Arcball _arcball;
+	String _shaderToActive;
 
 	bool fogToggle;
 	GLfloat fogDensityStart, fogDensityEnd;

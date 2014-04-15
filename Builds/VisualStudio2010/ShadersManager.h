@@ -15,6 +15,7 @@ public:
 
 private:
 	bool _isActive;
+	OpenGLContext &_openGLcontext;
 	OpenGLShaderProgram *_shaderProgram;
 };
 
