@@ -10,6 +10,7 @@ ShadersManager::ShadersManager(OpenGLContext & contextOpenGL)
 
 ShadersManager::~ShadersManager(void)
 {
+	delete _shaderProgram;
 }
 
 void ShadersManager::addShader(String const& fragShaderName, String const& vertShaderName)
