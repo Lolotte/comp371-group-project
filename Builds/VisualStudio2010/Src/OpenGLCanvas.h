@@ -6,6 +6,7 @@
 //#include "SOIL.h"
 #include "TextureMapping.h"
 #include "Camera.h"
+#include "AreaLight.h"
 
 #include <map>
 
@@ -83,6 +84,7 @@ private:
 	ShadersManager *_shadersManager;
 	TextureMapping *_textureMappingManager;
 	Camera *_mainCamera;
+	AreaLight *_areaLight;
 	std::map<int, ToggleKey> _keyEvents;
 
 	bool fogToggle;
