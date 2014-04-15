@@ -87,6 +87,7 @@ void	RenderSettings::initialize()
 	_shaderChoices->addItem("Toon", 2);
 	_shaderChoices->addItem("Two colors", 3);
 	_shaderChoices->addItem("Flat", 4);
+	_shaderChoices->addItem("Cook torrance", 5);
 	_shaderChoices->setBounds(0, _shininess->getBounds().getY() + _shininess->getBounds().getHeight(), _bounds.width, 30);
 	addAndMakeVisible(_shaderChoices);
 
