@@ -54,6 +54,7 @@ void Arcball::rotateAccToArcball(int mx, int my, ADrawable* selectedObject)
 	_axis.x = axisInCameraCoord.x;
 	_axis.y = axisInCameraCoord.y;
 	_axis.z = axisInCameraCoord.z;
-	selectedObject->rotate(_angle, _axis);
+	if (selectedObject != NULL)
+		selectedObject->rotate(_angle, _axis);
 }
 
