@@ -334,7 +334,7 @@ void OpenGLCanvas::renderOpenGL()
 		glPushMatrix();
 		_mainCamera->render();
 		_areaLight->render();
-		glutSolidTeapot(1);
+		
 		if (_textureMapping)
 			_textureMappingManager->apply(_shadersManager->getProgramID());
 
