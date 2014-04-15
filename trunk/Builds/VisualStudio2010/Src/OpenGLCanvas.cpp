@@ -23,11 +23,14 @@ OpenGLCanvas::OpenGLCanvas(void)
 	setBounds(0, 0, 850, 768);
 	_shadersManager = new ShadersManager(_contextOpenGL);
 	_textureMappingManager = new TextureMapping;
+	_mainCamera = new Camera;
 }
 
 
 OpenGLCanvas::~OpenGLCanvas(void)
 {
+	delete _mainCamera;
+
 	_shadersManager->release();
 	delete _shadersManager;
 
@@ -47,6 +50,7 @@ void OpenGLCanvas::initialize()
 	this->setWantsKeyboardFocus(true);
 	this->setupLights();
 	this->setWantsKeyboardFocus(true);
+	this->initializeKeys();
 	fogToggle = false;			 // Fog on/off
 	fogDensityStart = 10.0f;	// Fog density startpoint
 	fogDensityEnd = 20.0f;		// Fog density endpoint
@@ -54,6 +58,123 @@ void OpenGLCanvas::initialize()
 	_shadersManager->addShader("textureMapping.frag", "textureMapping.vert");
 	//_shadersManager->addShader("myShader.frag", "myShader.vert");
 	//_shadersManager->addShader("phong.frag", "phong.vert");
+}
+
+void OpenGLCanvas::initializeKeys()
+{
+	_keyEvents[44] = &OpenGLCanvas::selectPreviousItem;
+	_keyEvents[46] = &OpenGLCanvas::selectNextItem;
+	_keyEvents[70] = &OpenGLCanvas::activateFog;
+	_keyEvents[43] = &OpenGLCanvas::increaseFogDensity;
+	_keyEvents[45] = &OpenGLCanvas::decreaseFogDensity;
+	_keyEvents[65] = &OpenGLCanvas::rotateCameraLeft;
+	_keyEvents[68] = &OpenGLCanvas::rotateCameraRight;
+	_keyEvents[87] = &OpenGLCanvas::moveForward;
+	_keyEvents[83] = &OpenGLCanvas::moveBackward;
+	_keyEvents[88] = &OpenGLCanvas::rotateCameraTop;
+	_keyEvents[89] = &OpenGLCanvas::rotateCameraBottom;
+	_keyEvents[67] = &OpenGLCanvas::strafeLeft;
+	_keyEvents[86] = &OpenGLCanvas::strafeRight;
+	_keyEvents[82] = &OpenGLCanvas::reset;
+}
+
+// key events
+void OpenGLCanvas::rotateCameraLeft()
+{
+	_mainCamera->rotateY(5.0);
+	renderOpenGL();
+}
+
+void OpenGLCanvas::rotateCameraRight()
+{
+	_mainCamera->rotateY(-5.0);
+	renderOpenGL();
+}
+
+void OpenGLCanvas::moveForward()
+{
+	_mainCamera->moveForwards( -0.1 ) ;
+	renderOpenGL();
+}
+
+void OpenGLCanvas::moveBackward()
+{
+	_mainCamera->moveForwards( 0.1 ) ;
+	renderOpenGL();
+}
+
+void OpenGLCanvas::rotateCameraTop()
+{
+	_mainCamera->rotateX(5.0);
+	renderOpenGL();
+}
+
+void OpenGLCanvas::rotateCameraBottom()
+{
+	_mainCamera->rotateX(-5.0);
+	renderOpenGL();
+}
+
+void OpenGLCanvas::strafeLeft()
+{
+	_mainCamera->strafeRight(-0.1);
+	renderOpenGL();
+}
+
+void OpenGLCanvas::strafeRight()
+{
+	_mainCamera->strafeRight(0.1);
+	renderOpenGL();
+}
+
+// a changer
+void OpenGLCanvas::reset()
+{
+	_mainCamera->move(Vector3<GLfloat>(0.0,0.3,0.0));
+	renderOpenGL();
+}
+
+void OpenGLCanvas::selectPreviousItem()
+{
+	std::vector<ADrawable *>::iterator it;
+	it = _primitives.begin();
+	
+	(*it)->selected = false;
+	if (it != _primitives.begin())
+		it--;
+	else
+		it = _primitives.end();
+	(*it)->selected = true;
+}
+
+void OpenGLCanvas::selectNextItem()
+{
+	std::vector<ADrawable *>::iterator it;
+	it = _primitives.begin();
+
+	(*it)->selected = false;
+	if (it != _primitives.end())
+		it++;
+	else
+		it = _primitives.begin();
+	(*it)->selected = true;
+}
+
+void OpenGLCanvas::activateFog()
+{
+	fogToggle = !fogToggle;
+}
+
+void OpenGLCanvas::increaseFogDensity()
+{
+	fogDensityStart += 0.1f;
+	fogDensityEnd += 0.1f;
+}
+
+void OpenGLCanvas::decreaseFogDensity()
+{
+	fogDensityStart -= 0.1f;
+	fogDensityEnd -= 0.1f;	
 }
 
 // Mouse listener
@@ -98,46 +219,12 @@ void OpenGLCanvas::mouseDoubleClick (const MouseEvent &event)
 // key listener
 bool 	OpenGLCanvas::keyPressed (const KeyPress &key, Component *originatingComponent)
 {
-	std::vector<ADrawable *>::iterator it;
-	it = _primitives.begin();
-	if (key.getKeyCode() == 44){
-		(*it)->selected = false;
-		if (it != _primitives.begin())
-			it--;
-		else
-			it = _primitives.end();
-		(*it)->selected = true;
-	}
-	if (key.getKeyCode() == 46){
-		(*it)->selected = false;
-		if (it != _primitives.end())
-			it++;
-		else
-			it = _primitives.begin();
-		(*it)->selected = true;
-	} 
-
-
 	if (key == KeyPress::escapeKey)
-	{
-			exit(0);
-	}
+		JUCEApplication::quit();
 
-	if (key.getKeyCode() == 70)
-	{
-		fogToggle = !fogToggle;
-	}
-	if (key.getKeyCode() == 43)
-	{
-		fogDensityStart += 0.1f;
-		fogDensityEnd += 0.1f;
-	}
-	if (key.getKeyCode() == 45)
-	{
-		fogDensityStart -= 0.1f;
-		fogDensityEnd -= 0.1f;	
-	}
-
+	ToggleKey tk = _keyEvents[key.getKeyCode()];
+	if (tk != NULL)
+		(this->*tk)();
 
 	return true;
 }
@@ -237,7 +324,10 @@ void OpenGLCanvas::renderOpenGL()
 
 		// Matrix setup
 		glMatrixMode(GL_MODELVIEW);
-	
+		glLoadIdentity();
+		glPushMatrix();
+		_mainCamera->render();
+
 		if (_textureMapping)
 			_textureMappingManager->apply(_shadersManager->getProgramID());
 
@@ -250,6 +340,7 @@ void OpenGLCanvas::renderOpenGL()
 				(*it)->resetMaterials();
 			(*it)->draw();
 		}
+		glPopMatrix();
 	}
 }
 
