@@ -362,6 +362,15 @@ void OpenGLCanvas::renderOpenGL()
 		if (_textureMapping && _contextOpenGL.isActive())
 			_textureMappingManager->apply(_shadersManager->getProgramID());
 
+		GLfloat diff[4] = {0.3, 0.3, 0.3, 1};
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff);
+		glBegin(GL_QUADS);
+        glVertex3f(-20.0f, -5.0f, 20.0f);
+        glVertex3f( 20.0f, -5.0f, 20.0f);
+        glVertex3f( 20.0f, -5.0f, -20.0f);
+        glVertex3f(-20.0f, -5.0f, -20.0f);
+		glEnd();
+
 		std::vector<ADrawable *>::iterator it;
 		for (it = _primitives.begin(); it != _primitives.end(); ++it)
 		{
