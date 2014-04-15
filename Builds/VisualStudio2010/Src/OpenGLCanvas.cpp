@@ -319,6 +319,9 @@ void OpenGLCanvas::renderOpenGL()
 	}
 	if (!_shadersManager->isActive() && !_shaderToActive.isEmpty())
 		_shadersManager->addShader(_shaderToActive + ".frag", _shaderToActive + ".vert");
+	
+	if (!_textureMapping || _shaderToActive.isNotEmpty())
+		_shadersManager->use();
 
 	if (!_isInitialized)
 	{

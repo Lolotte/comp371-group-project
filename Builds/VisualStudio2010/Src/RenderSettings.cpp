@@ -166,6 +166,7 @@ void	RenderSettings::getTextureFile()
 		_shaderChoices->setEnabled(false);
 		_enableShader->setEnabled(false);
 		_disableShader->setEnabled(false);
+		this->disableShader();
 	}
 	else
 	{
