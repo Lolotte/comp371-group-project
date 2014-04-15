@@ -162,9 +162,19 @@ void	RenderSettings::getTextureFile()
 		_textureFile = fileChooser.getResult();
 		_textureName->setText(_textureFile.getFileName(), NotificationType::dontSendNotification);
 		_openGLCanvas->setTextureMapping(true, _textureFile);
+		_antiAliasing->setEnabled(false);
+		_shaderChoices->setEnabled(false);
+		_enableShader->setEnabled(false);
+		_disableShader->setEnabled(false);
 	}
 	else
+	{
 		_openGLCanvas->setTextureMapping(false, _textureFile);
+		_antiAliasing->setEnabled(true);
+		_shaderChoices->setEnabled(true);
+		_enableShader->setEnabled(true);
+		_disableShader->setEnabled(true);
+	}
 }
 
 void	RenderSettings::enableShader()

@@ -320,8 +320,6 @@ void OpenGLCanvas::renderOpenGL()
 	if (!_shadersManager->isActive() && !_shaderToActive.isEmpty())
 		_shadersManager->addShader(_shaderToActive + ".frag", _shaderToActive + ".vert");
 
-	_shadersManager->use();
-
 	if (!_isInitialized)
 	{
 		this->initialize();
@@ -396,7 +394,6 @@ void	OpenGLCanvas::disableShader()
 {
 	_shadersManager->release();
 	_shaderToActive = String::empty;
-	renderOpenGL();
 }
 
 void	OpenGLCanvas::setDiffuseMaterial(Colour diffuseColour)
@@ -424,6 +421,8 @@ void	OpenGLCanvas::enableMaterials(bool value)
 
 void	OpenGLCanvas::setTextureMapping(bool value, File file)
 {
+	if (!value)
+		_shadersManager->release();
 	_textureMapping = value;
 	_textureFile = file;
 }
